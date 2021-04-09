@@ -1,0 +1,34 @@
+<html>
+<head>
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/fabric.min.js"></script>
+</head>
+<body>
+<canvas id = "c" width ="800" height = "800"></canvas>
+<input id = "b" type = "button" value = "Go Right">
+<script>
+    
+    var canvas =new fabric.Canvas("c")
+    
+    var rect = new fabric.Rect({
+        
+        left: 100, 
+        top: 150,
+        fill: "red", 
+        width : 200, 
+        height: 200
+    
+        
+    })
+    
+    canvas.add(rect)
+
+    $("#b").click(function(){
+    rect.setLeft(rect.getLeft() + 10);
+    canvas.renderAll();
+    })
+    
+    
+</script>    
+</body>
+</html>
