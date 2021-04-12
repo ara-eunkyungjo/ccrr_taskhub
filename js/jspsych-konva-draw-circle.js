@@ -56,6 +56,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
     html += '<select id="tool">' + 
       '<option value="brush">Brush</option>' + 
       '<option value="eraser">Eraser</option>'+
+      '<option value="circle">Circle</option>' +
     '</select>'  
     
     html += '<body>' + 
@@ -82,42 +83,159 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
     stage.add(layer);
       
       
-      var layer = new Konva.Layer();
-      stage.add(layer);
+    var layer = new Konva.Layer();
+    stage.add(layer);
+      
+     //filler circle: 
+    var r_filler = new Konva.Circle({x: 0, y: 0, radius: 0,stroke: 'red', dash: [2,2]})  //, 
+    var shapes = stage.find('Circle');
+    r_filler.listening(false); // stop filler catching our mouse events.
+    layer.add(r_filler)
+      
+    stage.draw()
 
-      var isPaint = false;
-      var mode = 'brush';
-      var lastLine;
+    var isPaint = false;
+    var mode = 'brush';
+    var circle_mode = ""
+    var dragging = ""
+    var lastLine;
+      
+      
+      
+      // helper function for drag and draw the circle 
+     function startDrag(posIn){
+        
+       posStart = {x: posIn.x, y: posIn.y};
+       posNow = {x: posIn.x, y: posIn.y};
+        
+       var shapes = stage.find('Circle');
+       
+     }
+      
+     function updateDrag(posIn){ 
+
+      // update rubber circle position
+       posNow = {x: posIn.x, y: posIn.y};
+       var posRect = reverse(posStart,posNow);
+       r_filler.x(posRect.x1);
+       r_filler.y(posRect.y1);
+
+
+       radius = Math.sqrt(Math.pow((posRect.x2 - posRect.x1), 2) + Math.pow((posRect.y2 - posRect.y1), 2))    
+       r_filler.radius(radius);
+       r_filler.visible(true);  
+       //console.log(r_filler)
+      
+       stage.draw(); // redraw any changes.
+
+     }
+      
+     // reverse co-ords if user drags left / up
+    function reverse(r1, r2){
+      var r1x = r1.x, r1y = r1.y, r2x = r2.x,  r2y = r2.y, d;
+      if (r1x > r2x ){
+        d = Math.abs(r1x - r2x);
+        r1x = r2x; 
+        r2x = r1x + d;
+      }
+      if (r1y > r2y ){
+        d = Math.abs(r1y - r2y);
+        r1y = r2y; r2y = r1y + d;
+      }
+        return ({x1: r1x, y1: r1y, x2: r2x, y2: r2y}); // return the corrected rect.     
+    }
+      
+      
+      
+   
+      
+      
 
       stage.on('mousedown touchstart', function (e) {
         isPaint = true;
-        var pos = stage.getPointerPosition();
-        lastLine = new Konva.Line({
-          stroke: '#df4b26',
-          strokeWidth: 5,
-          globalCompositeOperation:
-            mode === 'brush' ? 'source-over' : 'destination-out',
-          points: [pos.x, pos.y],
-        });
-        layer.add(lastLine);
-          console.log(lastLine)
+          
+        if (mode != "circle"){
+            var pos = stage.getPointerPosition(); 
+            lastLine = new Konva.Line({
+              stroke: '#df4b26',
+              strokeWidth: 5,
+              globalCompositeOperation:
+                mode === 'brush' ? 'source-over' : 'destination-out',
+              points: [pos.x, pos.y],
+            });
+            
+            layer.add(lastLine);
+        }else{
+            
+            if (e.evt.button === 2) { //prevent right click to create label 
+                return;
+            }
+            circle_mode = "drawing"
+            dragging = "no"
+            
+            startDrag({x: e.evt.layerX, y: e.evt.layerY})            
+            
+            
+        }
 
       });
 
-      stage.on('mouseup touchend', function () {
-        isPaint = false;
+      stage.on('mouseup touchend', function (e) {
+        if (mode != "circle"){
+            isPaint = false;
+        }else{
+            if (circle_mode === "drawing" && dragging === "yes" ){
+                //r_filler.visible(false)
+                if (r_filler.radius()>5){
+                    var newCirc = new Konva.Circle({
+                      x: r_filler.x(),
+                      y: r_filler.y(),
+                      radius: r_filler.radius(),
+                      fill: 'red',
+                      listening: true
+                    })
+        
+                    layer.add(newCirc);
+                    stage.draw();
+                     dragging = "no"
+                
+                }else{
+                    alert("The circle you drew is too small!Please try again!")
+                }
+        }   
+        }  
       });
 
       // and core function - drawing
-      stage.on('mousemove touchmove', function () {
-        if (!isPaint) {
-          return;
+      
+   
+      
+      
+      
+      stage.on('mousemove touchmove', function (e) {
+        
+        
+        if (mode != "circle") {
+            if (!isPaint) {
+                return;
+            }
+            
+            const pos = stage.getPointerPosition();
+            var newPoints = lastLine.points().concat([pos.x, pos.y]);
+            lastLine.points(newPoints);
+            layer.batchDraw();
+        }else{
+            
+            if (circle_mode === "drawing"){
+                dragging = "yes"
+                updateDrag({x:e.evt.layerX, y:e.evt.layerY})
+                
+            }
+            
+            //
         }
-
-        const pos = stage.getPointerPosition();
-        var newPoints = lastLine.points().concat([pos.x, pos.y]);
-        lastLine.points(newPoints);
-        layer.batchDraw();
+          
+          
       });
 
       var select = document.getElementById('tool');
