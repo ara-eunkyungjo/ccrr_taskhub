@@ -54,9 +54,8 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
     }
       
     html += '<select id="tool">' + 
-      '<option value="brush">Brush</option>' + 
-      '<option value="eraser">Eraser</option>'+
-      '<option value="circle">Circle</option>' +
+      '<option value="circle">Circle</option>' + 
+      '<option value="line">Line</option>' +
     '</select>'  
     
     html += '<body>' + 
@@ -100,11 +99,14 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
     var posStart;
     var posNow;
     var isPaint = false;
-    var mode = 'brush';
+    
+    var mode = 'circle';
     var circle_mode = ""
     var dragging = ""
     var lastLine;
       
+    var drawingLine = false 
+    var line 
       
       
       // helper function for drag and draw the circle 
@@ -157,9 +159,23 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       
 
       r1.on('mousedown touchstart', function (e) {
-        isPaint = true;
+       
           
         if (mode != "circle"){
+            drawingLine = true 
+             const pos = stage.getPointerPosition();
+            line = new Konva.Line({
+                stroke: 'black',
+                strokeWidth: 8,
+                // remove line from hit graph, so we can check intersections
+                listening: true,
+                draggable: true, 
+                points: [pos.x, pos.y]
+                });
+            layer.add(line);
+            
+            /* free drawing 
+            isPaint = true;
             var pos = stage.getPointerPosition(); 
             lastLine = new Konva.Line({
               stroke: '#df4b26',
@@ -170,6 +186,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
             });
             
             layer.add(lastLine);
+            */ 
         }else{
             
             if (e.evt.button === 2) { //prevent right click to create label 
@@ -186,9 +203,23 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
 
       r1.on('mouseup touchend', function (e) {
         if (mode != "circle"){
+            
+            if (!line) {
+                return;
+            }
+            
+            console.log("line")
+            console.log(line)
+            layer.add(line)
+            stage.draw()
+            drawingLine = false 
+            
+            /*free drawing
             isPaint = false;
             return 
+            */
         }else{
+            isPaint = false;
             if (circle_mode === "drawing" && dragging === "yes" ){
                 r_filler.visible(false)
                 if (r_filler.radius()>5){
@@ -211,7 +242,9 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
         }   
         }
           dragging = "no"
-                    circle_mode = ""
+          circle_mode = ""
+          isPaint = false;
+          drawingLine = false 
       });
 
       // and core function - drawing
@@ -224,6 +257,18 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
         
         
         if (mode != "circle") {
+            
+            if (!line || drawingLine == false) {
+                return;
+            }
+              const pos = stage.getPointerPosition();
+              const points = line.points().slice();
+              points[2] = pos.x;
+              points[3] = pos.y;
+              line.points(points);
+              layer.batchDraw();
+            
+             /* free drawing 
             if (!isPaint) {
                 return;
             }
@@ -232,6 +277,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
             var newPoints = lastLine.points().concat([pos.x, pos.y]);
             lastLine.points(newPoints);
             layer.batchDraw();
+            */
         }else{
             
             if (circle_mode === "drawing"){
