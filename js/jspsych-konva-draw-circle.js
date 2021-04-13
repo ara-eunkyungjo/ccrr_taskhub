@@ -187,6 +187,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       r1.on('mouseup touchend', function (e) {
         if (mode != "circle"){
             isPaint = false;
+            return 
         }else{
             if (circle_mode === "drawing" && dragging === "yes" ){
                 r_filler.visible(false)
@@ -196,7 +197,8 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
                       y: r_filler.y(),
                       radius: r_filler.radius(),
                       fill: 'red',
-                      listening: true
+                      listening: true, 
+                        draggable: true, 
                     })
         
                     layer.add(newCirc);
@@ -260,7 +262,86 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       
       
       
-      
+stage.on('click', function (e) {
+        // prevent default behavior
+        //console.log("click!")
+        e.evt.preventDefault();
+        if (e.evt.button === 2) { //prevent right click to create label 
+            return;
+        }
+        
+        if (e.target === stage | e.target === r1 ) {
+          // if we are on empty place of the stage we will do nothing
+          console.log("click empty!")
+          return;
+        }
+        currentShape = e.target;
+         console.log("click on circle!")
+        console.log(currentShape)
+        var textNode = new Konva.Text({
+        text: "Add label here!",
+        x:  currentShape.attrs.x - currentShape.attrs.radius/2 ,
+        y:  currentShape.attrs.y ,
+        fontSize: 20,
+        fill: "white", 
+        draggable: true, 
+      });
+        
+        
+
+      layer.add(textNode);
+      layer.draw();
+      console.log("after redraw??")
+      console.log(textNode)
+      textNode.on('dblclick', () => {
+        // create textarea over canvas with absolute position
+
+        // first we need to find position for textarea
+        // how to find it?
+
+        // at first lets find position of text node relative to the stage:
+        var textPosition = textNode.getAbsolutePosition();
+        
+        // then lets find position of stage container on the page:
+        var stageBox = stage.container().getBoundingClientRect();
+
+        // so position of textarea will be the sum of positions above:
+        var areaPosition = {
+          x: textPosition.x + stageBox.x,
+          y: textPosition.y + stageBox.y
+        };
+
+       
+        
+
+        // create textarea and style it
+        var textarea = document.createElement('textarea');
+        document.body.appendChild(textarea);
+
+        textarea.value = textNode.text();
+        textarea.style.position = 'absolute';
+        textarea.style.top = areaPosition.y + 'px';
+        textarea.style.left = areaPosition.x + 'px';
+        textarea.style.width = textNode.width();
+
+        textarea.focus();
+
+        textarea.addEventListener('keydown', function (e) {
+          // hide on enter
+          if (e.keyCode === 13 |e.keyCode === 9) {
+            textNode.text(textarea.value);
+            // to prevent no modifications to content
+            if (textarea.value != trial.textbox_default){
+            //labels.push(textNode)
+            }
+            layer.draw();
+            document.body.removeChild(textarea);
+          }
+        });
+      });
+              
+        
+      });   
       
       
       
