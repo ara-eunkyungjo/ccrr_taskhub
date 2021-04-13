@@ -83,8 +83,11 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
     stage.add(layer);
       
       
-    var layer = new Konva.Layer();
-    stage.add(layer);
+    //var layer = new Konva.Layer();
+    //stage.add(layer);
+      
+    var r1 = new Konva.Rect({x: 0, y: 0, width: trial.canvas_width, height: trial.canvas_height, fill: 'white', stroke: "black"})    
+    layer.add(r1)  
       
      //filler circle: 
     var r_filler = new Konva.Circle({x: 0, y: 0, radius: 0,stroke: 'red', dash: [2,2]})  //, 
@@ -94,6 +97,8 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       
     stage.draw()
 
+    var posStart;
+    var posNow;
     var isPaint = false;
     var mode = 'brush';
     var circle_mode = ""
@@ -151,7 +156,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       
       
 
-      stage.on('mousedown touchstart', function (e) {
+      r1.on('mousedown touchstart', function (e) {
         isPaint = true;
           
         if (mode != "circle"){
@@ -172,7 +177,6 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
             }
             circle_mode = "drawing"
             dragging = "no"
-            
             startDrag({x: e.evt.layerX, y: e.evt.layerY})            
             
             
@@ -180,12 +184,12 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
 
       });
 
-      stage.on('mouseup touchend', function (e) {
+      r1.on('mouseup touchend', function (e) {
         if (mode != "circle"){
             isPaint = false;
         }else{
             if (circle_mode === "drawing" && dragging === "yes" ){
-                //r_filler.visible(false)
+                r_filler.visible(false)
                 if (r_filler.radius()>5){
                     var newCirc = new Konva.Circle({
                       x: r_filler.x(),
@@ -197,13 +201,15 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
         
                     layer.add(newCirc);
                     stage.draw();
-                     dragging = "no"
-                
+                    
+                    
                 }else{
                     alert("The circle you drew is too small!Please try again!")
                 }
         }   
-        }  
+        }
+          dragging = "no"
+                    circle_mode = ""
       });
 
       // and core function - drawing
@@ -212,7 +218,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       
       
       
-      stage.on('mousemove touchmove', function (e) {
+      r1.on('mousemove touchmove', function (e) {
         
         
         if (mode != "circle") {
@@ -243,8 +249,8 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
         mode = select.value;
       })
     
-    var r1 = new Konva.Rect({x: 0, y: 0, width: trial.canvas_width, height: trial.canvas_height, fill: 'white'})    
-    layer.add(r1)
+    //var r1 = new Konva.Rect({x: 0, y: 0, width: trial.canvas_width, height: trial.canvas_height, fill: 'white'})    
+    //layer.add(r1)
       
 
       
