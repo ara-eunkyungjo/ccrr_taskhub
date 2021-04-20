@@ -73,7 +73,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
   
     display_element.innerHTML = html
       
-    display_element.innerHTML += '<p><button id="clear-button" class="jspsych-btn">'+'Clear'+'</button></p>';
+    //display_element.innerHTML += '<p><button id="clear-button" class="jspsych-btn">'+'Clear'+'</button></p>';
   
     display_element.innerHTML += '<p><button id="jspsych-draw-circles-done-btn" class="jspsych-btn">'+trial.button_label+'</button></p>';
       
@@ -87,11 +87,12 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
     //var layer = new Konva.Layer();
     //stage.add(layer);
       
+    
     var r1 = new Konva.Rect({x: 0, y: 0, width: trial.canvas_width, height: trial.canvas_height, fill: 'white', stroke: "black"})    
     layer.add(r1)  
       
      //filler circle: 
-    var r_filler = new Konva.Circle({x: 0, y: 0, radius: 0,stroke: 'red', dash: [2,2]})  //, 
+    var r_filler = new Konva.Circle({x: 0, y: 0, radius: 0,stroke: 'red', dash: [2,2], name:"filler"})  //, 
     var shapes = stage.find('Circle');
     r_filler.listening(false); // stop filler catching our mouse events.
     layer.add(r_filler)
@@ -109,7 +110,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       
     var drawingLine = false 
     var line 
-      
+    var circles = []
       
       // helper function for drag and draw the circle 
      function startDrag(posIn){
@@ -134,7 +135,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
        r_filler.radius(radius);
        r_filler.visible(true);  
        //console.log(r_filler)
-      
+       layer.draw()
        stage.draw(); // redraw any changes.
 
      }
@@ -160,7 +161,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       
       
 
-      r1.on('mousedown touchstart', function (e) {
+     stage.on('mousedown touchstart', function (e) {
        
           
         if (mode != "circle"){
@@ -205,7 +206,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
 
       });
 
-      r1.on('mouseup touchend', function (e) {
+      stage.on('mouseup touchend', function (e) {
         if (mode != "circle"){
             
             if (!drawingLine) {
@@ -234,8 +235,10 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
                       fill: 'red',
                       listening: true, 
                         draggable: true, 
+                        name: "real_circle"
                     })
-        
+                     
+                     circles.push(newCirc)
                     layer.add(newCirc);
                     stage.draw();
                     
@@ -257,7 +260,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       
       
       
-      r1.on('mousemove touchmove', function (e) {
+      stage.on('mousemove touchmove', function (e) {
         
         if (mode != "circle") {
             
@@ -282,7 +285,8 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
             if (circle_mode === "drawing"){
                 dragging = "yes"
                 updateDrag({x:e.evt.layerX, y:e.evt.layerY})
-                
+                console.log("am i updating?")
+                console.log(r_filler)
             }
             
             //
@@ -305,7 +309,64 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
     stage.draw() // First draw of canvas.
     
       
+   let currentShape;
+    var menuNode = document.getElementById('menu');
       
+//delete button
+      document.getElementById('delete-button').addEventListener('click', () => {
+       
+        var shapes = stage.find('Circle');
+        currentShape.destroy();
+        layer.draw();
+        
+        
+      var shapes = stage.find('Circle');
+        
+          // here's to actuall remove circle 
+          
+        //remove circles or labels from the array 
+        var circle_index = circles.indexOf(currentShape);
+        if (circle_index > -1) {
+        circles.splice(circle_index, 1);
+        }
+          
+        var label_index = labels.indexOf(currentShape);
+        if (label_index > -1) {
+        labels.splice(label_index, 1);
+        }
+          
+          
+        
+      });
+        
+        
+     
+
+      window.addEventListener('click', () => {
+        // hide menu
+        menuNode.style.display = 'none';
+      });
+
+      stage.on('contextmenu', function (e) {
+        // prevent default behavior
+        e.evt.preventDefault();
+        if (e.target === stage | e.target === r1) {
+          // if we are on empty place of the stage we will do nothing
+          return;
+        }
+          
+        // this might be the ghost circles created by empty clicking 
+        currentShape = e.target;
+     
+        // show menu
+        menuNode.style.display = 'initial';
+        var containerRect = stage.container().getBoundingClientRect();
+        menuNode.style.top =
+          containerRect.top + stage.getPointerPosition().y + 4 + 'px';
+        menuNode.style.left =
+          containerRect.left + stage.getPointerPosition().x + 4 + 'px';
+        
+      });      
       
 stage.on('click', function (e) {
         // prevent default behavior
@@ -325,7 +386,7 @@ stage.on('click', function (e) {
         x:  currentShape.attrs.x - currentShape.attrs.radius/2 ,
         y:  currentShape.attrs.y ,
         fontSize: 20,
-        fill: "white", 
+        fill: "black", 
         draggable: true, 
       });
         
@@ -388,12 +449,19 @@ stage.on('click', function (e) {
       
       
       
-      
+
       
 display_element.querySelector('#clear-button').addEventListener('click', function(){
 
+    console.log("AFTER UPDATING!!")
     layer.find('Line').destroy();
-    layer.find('Circle').destroy();
+    
+    var all_circles = layer.find('Circle')
+    var non_filler = all_circles.filter(function(item){
+        return (item.attrs.name != "filler")
+    })
+    layer.find('Circles').destroy();
+    //non_filler.destroy()
     layer.find('Text').destroy()
     
     
@@ -402,6 +470,7 @@ display_element.querySelector('#clear-button').addEventListener('click', functio
     layer.add(r_filler)
    layer.draw();
     stage.draw()
+    console.log("!!!!!!!!!!!")
     console.log(r_filler)
     //layer.clear()
     //layer.children.destroy()
@@ -411,8 +480,7 @@ display_element.querySelector('#clear-button').addEventListener('click', functio
 
 });      
       
-      
-      
+
       
       
       
