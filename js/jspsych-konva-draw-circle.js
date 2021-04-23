@@ -93,9 +93,14 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       
      //filler circle: 
     var r_filler = new Konva.Circle({x: 0, y: 0, radius: 0,stroke: 'red', dash: [2,2], name:"filler"})  //, 
+    var line_filler = new Konva.Line({points:[0, 0, 0, 0], strokeWidth:8, stroke: 'black', dash: [2,2], name:"filler_line"})  //, 
+
     var shapes = stage.find('Circle');
     r_filler.listening(false); // stop filler catching our mouse events.
+    line_filler.listening(false)
+    
     layer.add(r_filler)
+    layer.add(line_filler)
       
     stage.draw()
 
@@ -123,6 +128,16 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
        
      }
       
+      function startDragLine(posIn){
+          
+        posStart = {x: posIn.x, y: posIn.y};
+        posNow = {x: posIn.x, y: posIn.y};
+        
+        var shapes = stage.find('Line');
+          
+      }  
+      
+      
      function updateDrag(posIn){ 
 
       // update rubber circle position
@@ -140,6 +155,22 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
        stage.draw(); // redraw any changes.
 
      }
+      
+     function updateDragLine(posIn){
+         
+       console.log("dragging drawing line?")
+       posNow = {x: posIn.x, y: posIn.y};
+       var posRect = reverse(posStart,posNow);
+       line_filler.x(posRect.x1);
+       line_filler.y(posRect.y1);
+
+       line_filler.visible(true);  
+       console.log(line_filler)
+       layer.draw()
+       stage.draw(); // redraw any changes.
+         
+         
+     }  
       
      // reverse co-ords if user drags left / up
     function reverse(r1, r2){
@@ -164,9 +195,21 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
 
      stage.on('mousedown touchstart', function (e) {
        
-          
+        console.log("mouse down!")
+        console.log(e.target)
+        
+        if(e.target.className != "Rect"){
+            return 
+        }
+         
         if (mode == "line"){
+            
+            // only draw lines when it is dragging? 
             drawingLine = true 
+            line_filler.visible(true)
+            //startDragLine({x: e.evt.layerX, y: e.evt.layerY})
+            
+            /*
              const pos = stage.getPointerPosition();
             line = new Konva.Line({
                 stroke: 'black',
@@ -176,8 +219,17 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
                 draggable: true, 
                 points: [pos.x, pos.y]
                 });
-            layer.add(line);
+            */
             
+            
+             const pos = stage.getPointerPosition();
+              const points = line_filler.points().slice();
+              points[0] = pos.x;
+              points[1] = pos.y;
+              line_filler.points(points);
+              //layer.draw()
+             //layer.batchDraw();
+             //stage.draw(); 
          
         }else if (mode == "circle"){
             
@@ -185,8 +237,6 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
                 return;
             }
             circle_mode = "drawing"
-            console.log('filler circle')
-            console.log(r_filler)
             dragging = "no"
             startDrag({x: e.evt.layerX, y: e.evt.layerY})            
             
@@ -201,9 +251,21 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
         if (mode == "line"){
             
             if (!drawingLine) {
-                line.destroy()
                 return;
             }
+            line_filler.visible(false)
+            var newline = new Konva.Line({
+                stroke: 'black',
+                strokeWidth: 8,
+                // remove line from hit graph, so we can check intersections
+                listening: true,
+                draggable: true, 
+                points:  line_filler.points()
+                });
+            
+            layer.add(newline);
+            stage.draw();
+            
             
             drawingLine = false 
             
@@ -251,29 +313,42 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
         
         if (mode == "line") {
             
-            if (!line){
-                
-                return; 
-            }
+            
             if(drawingLine == false) {
                 
                 return;
             }
+            
+            //updateDragLine({x:e.evt.layerX, y:e.evt.layerY})
+           
+              const pos = stage.getPointerPosition();
+              const points = line_filler.points().slice();
+              points[2] = pos.x;
+              points[3] = pos.y;
+              line_filler.points(points);
+              layer.draw()
+             layer.batchDraw();
+             stage.draw(); 
+              //layer.add(line);
+            
+            /*
               const pos = stage.getPointerPosition();
               const points = line.points().slice();
               points[2] = pos.x;
               points[3] = pos.y;
+            
               line.points(points);
               layer.batchDraw();
-            
+              layer.add(line);
+
+            */
    
         }else if(mode == "circle"){
             
             if (circle_mode === "drawing"){
                 dragging = "yes"
                 updateDrag({x:e.evt.layerX, y:e.evt.layerY})
-                console.log("am i updating?")
-                console.log(r_filler)
+                
             }
             
             //
