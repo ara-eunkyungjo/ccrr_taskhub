@@ -56,6 +56,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
     html += '<select id="tool">' + 
       '<option value="circle">Circle</option>' + 
       '<option value="line">Line</option>' +
+        '<option value="label">Label</option>' + 
     '</select>'  
     
     html += '<body>' + 
@@ -73,7 +74,6 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
   
     display_element.innerHTML = html
       
-    //display_element.innerHTML += '<p><button id="clear-button" class="jspsych-btn">'+'Clear'+'</button></p>';
   
     display_element.innerHTML += '<p><button id="jspsych-draw-circles-done-btn" class="jspsych-btn">'+trial.button_label+'</button></p>';
       
@@ -111,6 +111,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
     var drawingLine = false 
     var line 
     var circles = []
+    var labels = []
       
       // helper function for drag and draw the circle 
      function startDrag(posIn){
@@ -164,7 +165,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
      stage.on('mousedown touchstart', function (e) {
        
           
-        if (mode != "circle"){
+        if (mode == "line"){
             drawingLine = true 
              const pos = stage.getPointerPosition();
             line = new Konva.Line({
@@ -177,20 +178,8 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
                 });
             layer.add(line);
             
-            /* free drawing 
-            isPaint = true;
-            var pos = stage.getPointerPosition(); 
-            lastLine = new Konva.Line({
-              stroke: '#df4b26',
-              strokeWidth: 5,
-              globalCompositeOperation:
-                mode === 'brush' ? 'source-over' : 'destination-out',
-              points: [pos.x, pos.y],
-            });
-            
-            layer.add(lastLine);
-            */ 
-        }else{
+         
+        }else if (mode == "circle"){
             
             if (e.evt.button === 2) { //prevent right click to create label 
                 return;
@@ -202,28 +191,24 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
             startDrag({x: e.evt.layerX, y: e.evt.layerY})            
             
             
+        }else if (mode == "label"){
+            
         }
 
       });
 
       stage.on('mouseup touchend', function (e) {
-        if (mode != "circle"){
+        if (mode == "line"){
             
             if (!drawingLine) {
                 line.destroy()
                 return;
             }
             
-       
-            //layer.add(line)
-            //stage.draw()
             drawingLine = false 
             
-            /*free drawing
-            isPaint = false;
-            return 
-            */
-        }else{
+         
+        }else if (mode == "circle"){
             isPaint = false;
             if (circle_mode === "drawing" && dragging === "yes" ){
                 r_filler.visible(false)
@@ -246,7 +231,9 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
                 }else{
                     alert("The circle you drew is too small!Please try again!")
                 }
-        }   
+            }   
+        }else if (mode == "label"){
+            
         }
           dragging = "no"
           circle_mode = ""
@@ -260,9 +247,9 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
       
       
       
-      stage.on('mousemove touchmove', function (e) {
+    stage.on('mousemove touchmove', function (e) {
         
-        if (mode != "circle") {
+        if (mode == "line") {
             
             if (!line){
                 
@@ -280,7 +267,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
               layer.batchDraw();
             
    
-        }else{
+        }else if(mode == "circle"){
             
             if (circle_mode === "drawing"){
                 dragging = "yes"
@@ -290,6 +277,8 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
             }
             
             //
+        }else if(mode == "label"){
+            
         }
           
           
@@ -300,20 +289,15 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
         mode = select.value;
       })
     
-    //var r1 = new Konva.Rect({x: 0, y: 0, width: trial.canvas_width, height: trial.canvas_height, fill: 'white'})    
-    //layer.add(r1)
-      
-
-      
-
+   
     stage.draw() // First draw of canvas.
     
       
-   let currentShape;
-    var menuNode = document.getElementById('menu');
+let currentShape;
+var menuNode = document.getElementById('menu');
       
 //delete button
-      document.getElementById('delete-button').addEventListener('click', () => {
+document.getElementById('delete-button').addEventListener('click', () => {
        
         var shapes = stage.find('Circle');
         currentShape.destroy();
@@ -335,9 +319,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
         labels.splice(label_index, 1);
         }
           
-          
-        
-      });
+});
         
         
      
@@ -347,7 +329,7 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
         menuNode.style.display = 'none';
       });
 
-      stage.on('contextmenu', function (e) {
+stage.on('contextmenu', function (e) {
         // prevent default behavior
         e.evt.preventDefault();
         if (e.target === stage | e.target === r1) {
@@ -366,29 +348,39 @@ jsPsych.plugins['konva-draw-circle'] = (function(){
         menuNode.style.left =
           containerRect.left + stage.getPointerPosition().x + 4 + 'px';
         
-      });      
+});      
       
 stage.on('click', function (e) {
+    
+    if (mode != "label"){
+        return;
+    }
         // prevent default behavior
-        //console.log("click!")
+        
         e.evt.preventDefault();
         if (e.evt.button === 2) { //prevent right click to create label 
             return;
         }
         
-        if (e.target === stage | e.target === r1 ) {
+        if (e.target === stage | e.target === r1 | e.target.className === "Line" | e.target.className === "Text") {
           // if we are on empty place of the stage we will do nothing
           return;
         }
         currentShape = e.target;
+    
+       
         var textNode = new Konva.Text({
-        text: "Add label here!",
-        x:  currentShape.attrs.x - currentShape.attrs.radius/2 ,
-        y:  currentShape.attrs.y ,
-        fontSize: 20,
-        fill: "black", 
-        draggable: true, 
-      });
+                text: "Add label here!",
+                x:  currentShape.attrs.x - currentShape.attrs.radius/2 ,
+                y:  currentShape.attrs.y ,
+                fontSize: 20,
+                fill: "black", 
+            draggable: true, 
+                });
+        
+        console.log("currentShape")
+        console.log("create New TextNode")
+        console.log(textNode)
         
         
 
@@ -426,6 +418,8 @@ stage.on('click', function (e) {
         textarea.style.width = textNode.width();
 
         textarea.focus();
+        console.log("text area")
+        console.log(textarea)
 
         textarea.addEventListener('keydown', function (e) {
           // hide on enter
@@ -433,7 +427,7 @@ stage.on('click', function (e) {
             textNode.text(textarea.value);
             // to prevent no modifications to content
             if (textarea.value != trial.textbox_default){
-            //labels.push(textNode)
+            labels.push(textNode)
             }
             layer.draw();
             document.body.removeChild(textarea);
@@ -449,51 +443,23 @@ stage.on('click', function (e) {
       
       
       
-
-      
-display_element.querySelector('#clear-button').addEventListener('click', function(){
-
-    console.log("AFTER UPDATING!!")
-    layer.find('Line').destroy();
-    
-    var all_circles = layer.find('Circle')
-    var non_filler = all_circles.filter(function(item){
-        return (item.attrs.name != "filler")
-    })
-    layer.find('Circles').destroy();
-    //non_filler.destroy()
-    layer.find('Text').destroy()
-    
-    
-    var r_filler = new Konva.Circle({x: 0, y: 0, radius: 0,stroke: 'red', dash: [2,2]})  //, 
-    r_filler.listening(false); // stop filler catching our mouse events.
-    layer.add(r_filler)
-   layer.draw();
-    stage.draw()
-    console.log("!!!!!!!!!!!")
-    console.log(r_filler)
-    //layer.clear()
-    //layer.children.destroy()
-      
-    
-      // advance to next part
-
-});      
-      
-
       
       
       
 
 display_element.querySelector('#jspsych-draw-circles-done-btn').addEventListener('click', function(){
 
+    console.log(labels)
       var trial_data = {
         //"locations": JSON.stringify(locations),
         //"rt": rt,
-        //"labels": labels.map(function(x){return x.attrs.text})
-        
+        "labels_raw": labels, 
+        "labels_processed": labels.map(function(x){return ({text: x.attrs.text, x: x.attrs.x, y: x.attrs.y})}),
+        "circles_raw": circles,
+        "circles_location":circles.map(function(x){return({x: x.attrs.x, y: x.attrs.y, r: x.attrs.radius})})
       };
         
+       
       display_element.innerHTML = '';
       jsPsych.finishTrial(trial_data);
     
