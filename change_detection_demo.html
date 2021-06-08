@@ -1,0 +1,107 @@
+<html>
+      
+    <head>
+        <script src= "js/jspsych.js"></script>
+        <script src = "js/konva.js"></script>
+        <script src="js/English.js"></script>
+        
+<!-- Or versioned -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css"
+/>
+
+<!-- Include Choices JavaScript (latest) -->
+
+<!-- Or versioned -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+        <script src="js/jspsych-instructions.js"></script>
+        <script src="js/jspsych-drop-down.js"></script>
+        <script src="js/country-selector.js"></script>
+        <script src = "js/jspsych-change-detection.js"></script>
+        <script src = "js/jspsych-demog-geolocation.js"></script>
+        <link rel="stylesheet" href="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <!-- RMTS Version: <script src="https://code.jquery.com/jquery-1.10.2.js"></script> -->
+        <link href="css/jspsych.css" rel="stylesheet" type="text/css"></link>
+        <link href="css/style.css" rel="stylesheet" type="text/css"></link>
+        <link rel="stylesheet" href="css/w3.css">
+
+        
+
+
+
+        
+    </head>
+    <body></body>
+    <script>
+   
+    var userLang = navigator.language || navigator.userLanguage; 
+    var timenum = Date.now();
+    var subject_id = 'SS' + timenum;
+    jsPsych.data.addProperties({ subject: subject_id });
+    jsPsych.data.addProperties({ broswerLang: userLang });
+
+   
+    var timeline = [];
+        
+        
+       
+    var dropdown_test = {
+        type: "dropdown" ,
+        preamble: "haha", 
+        superq:"lol",
+        questions:[
+            {text: "i'm text",
+            options: demog_locations,
+            placeholder:"select your country"}
+        ]   
+    }        
+      
+        
+        
+    var exp = {
+        type: "change-detection",
+        first_stimulus: "<img src='images/change_detection/1a.jpg'>",
+        second_stimulus: "<img src='images/change_detection/1b.jpg'>",
+        stimulus_duration:1000,  
+        interval_duration:2000, 
+        response_ends_trial: true
+        
+    }    
+        
+    //timeline.push(instruction)
+        timeline.push(dropdown_test)
+
+    timeline.push(exp)
+        
+    
+        
+        
+    function saveData(name, data){
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '../../../cgi-bin/daffner2000/write_data.php'); // langcog server path
+        //xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({filename: name, filedata: data}));
+    }
+        
+        
+    jsPsych.init({
+        timeline: timeline,
+        //show_progress_bar: !kid,
+        //use_webaudio: true, // this won't work for local testing (CORS), but maybe on server
+        //preload_audio: audio,
+        //preload_images: images,
+        //preload_video: video,
+        on_trial_finish: function(){
+            saveData("cultureRR1-" + subject_id, jsPsych.data.get().csv());
+            jsPsych.data.displayData();
+            //setTimeout(function() { turk.submit(jsPsych.data.get().ignore('external-html').json()); }, 5000);
+      }
+    })
+        
+        
+    </script>
+</html>
