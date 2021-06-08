@@ -19,6 +19,8 @@
         <script src="js/jspsych-drop-down.js"></script>
         <script src="js/country-selector.js"></script>
         <script src = "js/jspsych-change-detection.js"></script>
+        <script src = "js/jspsych-survey-text.js"></script>
+        <script src ="js/jspsych-html-keyboard-response.js"></script>
         <script src = "js/jspsych-demog-geolocation.js"></script>
         <link rel="stylesheet" href="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
         <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
@@ -47,36 +49,117 @@
     var timeline = [];
         
         
-       
-    var dropdown_test = {
-        type: "dropdown" ,
-        preamble: "haha", 
-        superq:"lol",
-        questions:[
-            {text: "i'm text",
-            options: demog_locations,
-            placeholder:"select your country"}
-        ]   
-    }        
+   
       
         
-        
-    var exp = {
-        type: "change-detection",
-        first_stimulus: "<img src='images/change_detection/1a.jpg'>",
-        second_stimulus: "<img src='images/change_detection/1b.jpg'>",
-        stimulus_duration:1000,  
-        interval_duration:2000, 
-        response_ends_trial: true
-        
-    }    
-        
-    //timeline.push(instruction)
-        timeline.push(dropdown_test)
-
-    timeline.push(exp)
-        
+    // creat all the image path 
+    var stimulus_pair = 4 
+    var stimulus_presentation_length = 1000
+    var isi = 500
+    var resp_prompt = "Can you describe the differences you saw?"
     
+        
+    var stimulus_index = Array.from({ length: stimulus_pair }, (v, i) => i+1)
+    console.log(stimulus_index)
+    var task_stimulus_a = stimulus_index.map(i =>'<img src="images/change_detection/' + i + 'a.jpg" style="width:800px;height:600px;">')
+    var task_stimulus_b = stimulus_index.map(i =>'<img src="images/change_detection/' + i + 'b.jpg" style="width:800px;height:600px;">')
+    
+    // currently might not requires multiple randomization 
+    
+    var all_change_detection_trials = []
+    
+    for (i = 0; i < stimulus_pair; i++){
+        
+        var stimulus_a = task_stimulus_a[i]
+        var stimulus_b = task_stimulus_b[i]
+        
+        var first_stimulus = {
+        type: "html-keyboard-response", 
+        stimulus: stimulus_a,
+        choices:["Space"], 
+        //stimulus_duration: 1000, 
+        trial_duration: stimulus_presentation_length,
+        response_ends_trial: false, 
+        }
+    
+        var second_stimulus = {
+            type: "html-keyboard-response", 
+            stimulus: stimulus_b,
+            choices:["Space"],
+            //stimulus_duration: 1000, 
+            trial_duration: stimulus_presentation_length,
+            response_ends_trial: false 
+        }
+        
+        var second_stimulus_if_node = {
+            timeline: [second_stimulus], 
+            conditional_function: function(){
+                 var data = jsPsych.data.get().last(1).values()[0];
+                if(jsPsych.pluginAPI.compareKeys(data.response, 'Space')){
+                    return false;
+                    } else {
+                return true;
+                }
+                }
+        }
+        
+        var trial_while_loop = {
+        timeline: [first_stimulus, second_stimulus_if_node],
+        loop_function: function (data) {
+            console.log(data.values())
+            console.log(data.values()[1])
+            var value = data.values()
+            if (data.values().length == 2){
+                if(data.values()[0].response == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Space') | 
+                  data.values()[1].response == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Space')){
+                    return false
+                }else{
+                    return true 
+                }  
+            }else{
+                if(data.values()[0].response == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Space')){
+                    return false
+                }else{
+                    return true 
+                }  
+                
+            }
+        }
+        }
+        
+        var survey_trial = {
+                type: 'survey-text',
+                questions: [
+                    {prompt: resp_prompt, name: 'Age'}, 
+                ],
+            };
+        
+        all_change_detection_trials.push(trial_while_loop, survey_trial)
+        
+        
+    }
+    
+    timeline = timeline.concat(all_change_detection_trials)
+    console.log("Timeline")
+    console.log(timeline)
+   
+    // this is to hide the second stimulus if the participants already responded to the first 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //timeline.push(instruction)
+     //   timeline.push(dropdown_test)
+
+    //timeline.push(trial_while_loop)
+        
+      //  timeline.push(dropdown_test)
+
         
         
     function saveData(name, data){
