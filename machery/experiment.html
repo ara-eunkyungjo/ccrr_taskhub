@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+   
+    <head>
+        
+        <meta charset="utf-8">
+        
+        <title> __ </title>
+        
+       
+        <script src="js/jspsych.js"></script>
+<!--        <script src="js/jspsych-html-button-response.js"></script>-->
+        <script src="js/jspsych-survey-multi-choiceOLD.js"></script>
+        <script src="js/jspsych-html-button-responseD.js"></script>
+        <script src="js/shuffle.js"></script>
+
+        
+        <script src="js/English.js"></script>
+
+        
+        
+<!--        formatting-->
+        <link href="css/jspsych.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="css/w3.css">  
+        
+<!--        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+<!--        china-friendly jquery cdn??-->
+        <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<!--        end of formatting-->
+        
+        
+    </head>
+    
+    <body></body>
+    
+    <script>
+    
+        var timeline = []
+    
+ 
+    ///////////////////////////////////////////////////////
+        
+        // semantic intuition task from Machery paper
+
+
+        //////// TASK VARIABLES
+
+        var semantic_intuition_godel_1 = {
+            type: 'survey-multi-choiceOLD',
+            button_label: question_button,
+            questions: [
+                {
+                    prompt: godel_1_story,
+                    name: "godel_1",
+                    options: godel_1_opt,
+                    required: true,
+                }
+            ]
+        }
+
+        var semantic_intuition_godel_2 = {
+            type: 'survey-multi-choiceOLD',
+            button_label: question_button,
+            questions: [
+                {
+                    prompt: godel_2_story,
+                    name: "godel_1",
+                    options: godel_2_opt,
+                    required: true,
+                }
+            ]
+        }
+
+        var semantic_intuition_jonah_1 = {
+            type: 'survey-multi-choiceOLD',
+            button_label: question_button,
+            questions: [
+                {
+                    prompt: jonah_1_story,
+                    name: "godel_1",
+                    options: jonah_1_opt,
+                    required: true,
+                }
+            ]
+        }
+
+        var semantic_intuition_jonah_2 = {
+            type: 'survey-multi-choiceOLD',
+            button_label: question_button,
+            questions: [
+                {
+                    prompt: jonah_2_story,
+                    name: "godel_1",
+                    options: jonah_2_opt,
+                    required: true,
+                }
+            ]
+        }
+
+
+
+        //////// PACKAGING
+
+        var all_semantic_intuition_subtasks = [
+            semantic_intuition_godel_1,
+            semantic_intuition_godel_2,
+            semantic_intuition_jonah_1,
+            semantic_intuition_jonah_2
+        ]
+
+        var semantic_intuition_task = shuffle(all_semantic_intuition_subtasks)   // randomize
+        
+        
+        
+
+//////////////////////////////////////////////////////
+    
+                
+    for (var i = 0; i < semantic_intuition_task.length; i++) {
+        var current_task = semantic_intuition_task[i]
+        timeline.push(current_task)
+    }
+        
+        jsPsych.init({
+            timeline: timeline
+      })
+    
+    
+    </script>
+    
+</html>
+
