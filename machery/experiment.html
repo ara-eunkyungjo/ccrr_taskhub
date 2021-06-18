@@ -70,6 +70,7 @@
             ]
         }
 
+        
         var semantic_intuition_godel_2 = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
@@ -84,8 +85,38 @@
         }
 
         
-    
-        var semantic_intuition_jonah_1 = {
+        var semantic_intuition_jonah_1_para1 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: jonah_1_story_para1,
+        }
+
+//        timeline.push(semantic_intuition_jonah_1_para1)
+        
+        
+        var semantic_intuition_jonah_1_para2 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: jonah_1_story_para2,
+        }
+        
+//        timeline.push(semantic_intuition_jonah_1_para2)
+
+
+        var semantic_intuition_jonah_1_para3 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: jonah_1_story_para3,
+        }
+        
+//        timeline.push(semantic_intuition_jonah_1_para3)
+        
+        
+        
+        var semantic_intuition_jonah_1_all = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
             questions: [
@@ -97,7 +128,21 @@
                 }
             ]
         }
+        
+//        timeline.push(semantic_intuition_jonah_1_all)
+        
+        var semantic_intuition_jonah_1 = [
+            semantic_intuition_jonah_1_para1,
+            semantic_intuition_jonah_1_para2,
+            semantic_intuition_jonah_1_para3,
+            semantic_intuition_jonah_1_all
+        ]
+        
+//        timeline.push(semantic_intuition_jonah_1)
 
+//        timeline = timeline.concat(semantic_intuition_jonah_1)
+
+        
         var semantic_intuition_jonah_2 = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
@@ -129,11 +174,14 @@
 
 //////////////////////////////////////////////////////
     
-        timeline.push(semantic_intuition_instr_page)
+    timeline.push(semantic_intuition_instr_page)
                 
+        
     for (var i = 0; i < semantic_intuition_task.length; i++) {
         var current_task = semantic_intuition_task[i]
-        timeline.push(current_task)
+//        timeline.push(current_task)
+        timeline = timeline.concat(current_task)  // timeline.push does not take arrays
+
     }
         
         jsPsych.init({
