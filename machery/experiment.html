@@ -57,6 +57,8 @@
         
         
         
+        
+        
         var semantic_intuition_godel_1 = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
@@ -71,13 +73,16 @@
         }
 
         
+        
+        
+        
         var semantic_intuition_godel_2 = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
             questions: [
                 {
                     prompt: godel_2_story,
-                    name: "godel_1",
+                    name: "godel_2",
                     options: godel_2_opt,
                     required: true,
                 }
@@ -85,15 +90,14 @@
         }
 
         
+        
+        
         var semantic_intuition_jonah_1_para1 = {
             type: 'html-keyboard-response',
             stimulus: 'Please read carefully:',
             choices: jsPsych.ALL_KEYS,
             prompt: jonah_1_story_para1,
         }
-
-//        timeline.push(semantic_intuition_jonah_1_para1)
-        
         
         var semantic_intuition_jonah_1_para2 = {
             type: 'html-keyboard-response',
@@ -102,35 +106,26 @@
             prompt: jonah_1_story_para2,
         }
         
-//        timeline.push(semantic_intuition_jonah_1_para2)
-
-
         var semantic_intuition_jonah_1_para3 = {
             type: 'html-keyboard-response',
             stimulus: 'Please read carefully:',
             choices: jsPsych.ALL_KEYS,
             prompt: jonah_1_story_para3,
-        }
-        
-//        timeline.push(semantic_intuition_jonah_1_para3)
-        
-        
+        }         
         
         var semantic_intuition_jonah_1_all = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
             questions: [
                 {
-                    prompt: jonah_1_story,
-                    name: "godel_1",
+                    prompt: jonah_1_story_all,
+                    name: "jonah_1",
                     options: jonah_1_opt,
                     required: true,
                 }
             ]
         }
-        
-//        timeline.push(semantic_intuition_jonah_1_all)
-        
+                
         var semantic_intuition_jonah_1 = [
             semantic_intuition_jonah_1_para1,
             semantic_intuition_jonah_1_para2,
@@ -138,26 +133,53 @@
             semantic_intuition_jonah_1_all
         ]
         
-//        timeline.push(semantic_intuition_jonah_1)
-
-//        timeline = timeline.concat(semantic_intuition_jonah_1)
 
         
-        var semantic_intuition_jonah_2 = {
+        
+        
+       var semantic_intuition_jonah_2_para1 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: jonah_2_story_para1,
+        }
+        
+        var semantic_intuition_jonah_2_para2 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: jonah_2_story_para2,
+        }
+        
+        var semantic_intuition_jonah_2_para3 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: jonah_2_story_para3,
+        }
+             
+        var semantic_intuition_jonah_2_all = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
             questions: [
                 {
-                    prompt: jonah_2_story,
-                    name: "godel_1",
+                    prompt: jonah_2_story_all,
+                    name: "jonah_2",
                     options: jonah_2_opt,
                     required: true,
                 }
             ]
         }
+        
+        var semantic_intuition_jonah_2 = [
+            semantic_intuition_jonah_2_para1,
+            semantic_intuition_jonah_2_para2,
+            semantic_intuition_jonah_2_para3,
+            semantic_intuition_jonah_2_all
+        ]
 
 
-
+        
         //////// PACKAGING
 
         var all_semantic_intuition_subtasks = [
@@ -174,18 +196,21 @@
 
 //////////////////////////////////////////////////////
     
+        
     timeline.push(semantic_intuition_instr_page)
                 
         
     for (var i = 0; i < semantic_intuition_task.length; i++) {
         var current_task = semantic_intuition_task[i]
-//        timeline.push(current_task)
         timeline = timeline.concat(current_task)  // timeline.push does not take arrays
 
     }
         
         jsPsych.init({
-            timeline: timeline
+            timeline: timeline,
+            on_trial_finish: function(){
+            jsPsych.data.displayData();
+        }
       })
     
     
