@@ -52,8 +52,32 @@
 
         
         
+        var en_reading_check = {
+            type: 'survey-multi-choiceOLD',
+            button_label: question_button,
+            questions: [
+                {
+                    prompt: en_reading_check_instr,
+                    name: "en_reading_check",
+                    options: en_reading_check_opt,
+                    required: true,
+                }
+            ]
+        }
         
+        var en_reading_check_feedback_eligible_page = {
+            type: 'html-button-response',
+            stimulus: en_reading_check_feedback_eligible,
+            choices: [questions_pre_button],
+        }
         
+        var en_reading_check_feedback_ineligible_page = {
+            type: 'html-button-response',
+            stimulus: en_reading_check_feedback_ineligible,
+            choices: [questions_pre_button],
+        }     
+        
+     
         
         
         
@@ -198,7 +222,8 @@
         ]
 
 
-        var semantic_intuition_task = [semantic_intuition_instr_page].concat(
+        var semantic_intuition_task =       [en_reading_check].concat(
+            semantic_intuition_instr_page,
             shuffle(all_semantic_intuition_subtasks) // randomize
         )   
         
