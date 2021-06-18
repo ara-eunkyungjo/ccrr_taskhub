@@ -1,6 +1,7 @@
 
 // semantic intuitino task (Machery)
 
+
 semantic_intuition_instr = ["<p>In this game, we have 4 short stories for you and a question about each story.</p><p>Please read carefully!</p>"]
 
 godel_1_story = ["<div class='w3-container' style='width: 800px; bottom-padding: 20px;'>" + "<p><center>Please read carefully:</center></p><p>Ivy is a high school student in Hong Kong. In her astronomy class she was taught that Tsu Ch'ung Chih was the man who first determined the precise time of the summer and winter solstices. But, like all her classmates, this is the only thing she has heard about Tsu Ch'ung Chih. Now suppose that Tsu Ch'ung Chih did not really make this discovery. He stole it from an astronomer who died soon after making the discovery. But the theft remained entirely undetected and Tsu Ch'ung Chih became famous for the discovery of the precise times of the solstices. Many people are like Ivy; the claim that Tsu Ch'ung Chih determined the solstice times is the only thing they have heard about him. When Ivy uses the name 'Tsu Ch'ung Chih,' is she talking about:</p>"]
