@@ -11,7 +11,8 @@
         <script src="js/jspsych.js"></script>
 <!--        <script src="js/jspsych-html-button-response.js"></script>-->
         <script src="js/jspsych-survey-multi-choiceOLD.js"></script>
-        <script src="js/jspsych-html-button-responseD.js"></script>
+        <script src="js/jspsych-html-button-response.js"></script>
+        <script src="js/jspsych-html-keyboard-response.js"></script>
         <script src="js/shuffle.js"></script>
 
         
@@ -36,6 +37,7 @@
     
     <script>
     
+        var CN = false;
         var timeline = []
     
  
@@ -46,6 +48,15 @@
 
         //////// TASK VARIABLES
 
+        
+        var semantic_intuition_instr_page = {
+            type: 'html-button-response',
+            stimulus: semantic_intuition_instr,
+            choices: [questions_pre_button],
+        };
+        
+        
+        
         var semantic_intuition_godel_1 = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
@@ -72,6 +83,8 @@
             ]
         }
 
+        
+    
         var semantic_intuition_jonah_1 = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
@@ -116,6 +129,7 @@
 
 //////////////////////////////////////////////////////
     
+        timeline.push(semantic_intuition_instr_page)
                 
     for (var i = 0; i < semantic_intuition_task.length; i++) {
         var current_task = semantic_intuition_task[i]
