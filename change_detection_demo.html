@@ -49,18 +49,27 @@
     var timeline = [];
         
         
-   
+    function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+    }
       
         
     // creat all the image path 
-    var stimulus_pair = 30 
+    var stimulus_pair = 4 
     var stimulus_presentation_length = 560
     var stimulus_interval_length = 80
     var resp_prompt = "Can you describe the differences you saw?"
+    var manipulation_prompt =  "<p>What are the focal objects in the picture?</p>"
     
         
     var stimulus_index = Array.from({ length: stimulus_pair }, (v, i) => i+1)
-    console.log(stimulus_index)
     var task_stimulus_a = stimulus_index.map(i =>'<img src="images/change_detection/' + i + 'a.jpg" style="width:800px;height:600px;">')
     var task_stimulus_b = stimulus_index.map(i =>'<img src="images/change_detection/' + i + 'b.jpg" style="width:800px;height:600px;">')
     
@@ -70,12 +79,14 @@
     
     for (i = 0; i < stimulus_pair; i++){
         
-        var stimulus_a = task_stimulus_a[i]
-        var stimulus_b = task_stimulus_b[i]
+     
+        // shuffle within pair 
+        var stimuli = [task_stimulus_a[i], task_stimulus_b[i]]
+        var stimuli = shuffle(stimuli)
         
         var first_stimulus = {
         type: "html-keyboard-response", 
-        stimulus: stimulus_a,
+        stimulus: stimuli[0],
         choices:["Space"], 
         //stimulus_duration: 1000, 
         trial_duration: stimulus_presentation_length,
@@ -95,7 +106,7 @@
     
         var second_stimulus = {
             type: "html-keyboard-response", 
-            stimulus: stimulus_b,
+            stimulus: stimuli[1],
             choices:["Space"],
             //stimulus_duration: 1000, 
             trial_duration: stimulus_presentation_length,
@@ -137,21 +148,55 @@
         }
         }
         
-        var survey_trial = {
+        var describe_difference_trial = {
                 type: 'survey-text',
                 questions: [
                     {prompt: resp_prompt, name: 'Description' + i}, 
                 ],
             };
         
-        all_change_detection_trials.push(trial_while_loop, survey_trial)
+        var change_detection_trial = [trial_while_loop, describe_difference_trial]
+        
+        all_change_detection_trials.push(change_detection_trial)
         
         
     }
     
+    all_change_detection_trials = shuffle(all_change_detection_trials)
+    all_change_detection_trials = all_change_detection_trials.flat()
+    console.log(all_change_detection_trials)
+        
+    // make all the prompt 
+        
+    var manipulation_check_stimuli = stimulus_index.map(i =>
+                                             ({prompt: '<img src="images/change_detection/' + i + 'a.jpg" style="width:400px;height:300px;">' +  '<img src="images/change_detection/' + i + 'b.jpg" style="width:400px;height:300px;">', name: "pair" + i})
+                                             ) 
+    
+        
+    manipulation_check_stimuli = shuffle(manipulation_check_stimuli)
+    
+    var manipulation_trials = []
+        
+    for (i = 0; i < stimulus_pair; i++){
+
+        manipulation_check_stimulus = manipulation_check_stimuli[i].prompt
+        console.log(manipulation_check_stimulus)
+         var manipulation_trial = {
+                type: 'survey-text',
+                questions: [
+                    {prompt: manipulation_check_stimulus + manipulation_prompt}, 
+                ],
+                required: true 
+            };
+        
+        manipulation_trials.push(manipulation_trial)
+    }
+        
     timeline = timeline.concat(all_change_detection_trials)
-    console.log("Timeline")
+    timeline = timeline.concat(manipulation_trials)
+        
     console.log(timeline)
+    
    
     // this is to hide the second stimulus if the participants already responded to the first 
     
