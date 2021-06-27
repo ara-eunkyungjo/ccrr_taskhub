@@ -242,18 +242,20 @@
         
         // conditional function for CN "eligible" timeline
         var if_node_eligible = {
-            timeline: [
-                en_reading_check_feedback_eligible_page, 
-                semantic_intuition_instr_page,
-                all_semantic_intuition_subtasks
-            ],
+            timeline: [en_reading_check_feedback_eligible_page].concat(semantic_intuition_instr_page,
+                all_semantic_intuition_subtasks),
+//            [
+//                en_reading_check_feedback_eligible_page, 
+//                semantic_intuition_instr_page,
+//                all_semantic_intuition_subtasks
+//            ],
             conditional_function: function(){
                 var en_reading_check_response = jsPsych.data.get().filter({trial_type: 'survey-multi-choice-en-reading-check'}).values()[0].responses;
                 console.log(en_reading_check_response);
-                if(en_reading_check_response.includes("能")){
-                    return true;
-                } else {
+                if(en_reading_check_response.includes("不能")){
                     return false;
+                } else {
+                    return true;
                 }
             }
         }
@@ -264,15 +266,18 @@
 //        timeline = timeline.concat([en_reading_check, if_node_ineligible, if_node_eligible])
         
         
+
+        
+        //////// PACKAGING
+ 
+        
         var semantic_intuition_task =       [en_reading_check].concat(
             if_node_ineligible,
             if_node_eligible
         )  
  
         
-        //////// PACKAGING
-        
-//
+
 //        var semantic_intuition_task =       [en_reading_check].concat(
 //            semantic_intuition_instr_page,
 //            all_semantic_intuition_subtasks
@@ -281,6 +286,7 @@
 //        console.log(semantic_intuition_task)
         
 
+        
 //////////////////////////////////////////////////////
     
                 
