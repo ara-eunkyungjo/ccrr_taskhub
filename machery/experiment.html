@@ -11,6 +11,7 @@
         <script src="js/jspsych.js"></script>
 <!--        <script src="js/jspsych-html-button-response.js"></script>-->
         <script src="js/jspsych-survey-multi-choiceOLD.js"></script>
+        <script src="js/jspsych-survey-multi-choice-en-reading-check.js"></script>
         <script src="js/jspsych-html-button-response.js"></script>
         <script src="js/jspsych-html-keyboard-response.js"></script>
         <script src="js/shuffle.js"></script>
@@ -52,8 +53,9 @@
 
         
         
+        // EN reading check for CN participants
         var en_reading_check = {
-            type: 'survey-multi-choiceOLD',
+            type: 'survey-multi-choice-en-reading-check',
             button_label: question_button,
             questions: [
                 {
@@ -65,22 +67,27 @@
             ]
         }
         
-        var en_reading_check_feedback_eligible_page = {
-            type: 'html-button-response',
-            stimulus: en_reading_check_feedback_eligible,
-            choices: [questions_pre_button],
-        }
         
+
+        // feedback page: ineligible
         var en_reading_check_feedback_ineligible_page = {
             type: 'html-button-response',
             stimulus: en_reading_check_feedback_ineligible,
             choices: [questions_pre_button],
-        }     
-        
-     
+        }      
         
         
         
+        // feedback page: eligible > main task
+        var en_reading_check_feedback_eligible_page = {
+            type: 'html-button-response',
+            stimulus: en_reading_check_feedback_eligible,
+            choices: [questions_pre_button],
+        }  
+        
+        
+        
+        // task instruction
         var semantic_intuition_instr_page = {
             type: 'html-button-response',
             stimulus: semantic_intuition_instr,
@@ -88,9 +95,8 @@
         };
         
         
-        
-        
-        
+               
+        // Godel 1
         var semantic_intuition_godel_1 = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
@@ -106,8 +112,7 @@
 
         
         
-        
-        
+        // Godel 2
         var semantic_intuition_godel_2 = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
@@ -123,28 +128,25 @@
 
         
         
-        
+        // Jonah 1
         var semantic_intuition_jonah_1_para1 = {
             type: 'html-keyboard-response',
             stimulus: 'Please read carefully:',
             choices: jsPsych.ALL_KEYS,
             prompt: jonah_1_story_para1,
-        }
-        
+        } 
         var semantic_intuition_jonah_1_para2 = {
             type: 'html-keyboard-response',
             stimulus: 'Please read carefully:',
             choices: jsPsych.ALL_KEYS,
             prompt: jonah_1_story_para2,
         }
-        
         var semantic_intuition_jonah_1_para3 = {
             type: 'html-keyboard-response',
             stimulus: 'Please read carefully:',
             choices: jsPsych.ALL_KEYS,
             prompt: jonah_1_story_para3,
         }         
-        
         var semantic_intuition_jonah_1_all = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
@@ -157,39 +159,36 @@
                 }
             ]
         }
-                
+        // Jonah 1 packaged       
         var semantic_intuition_jonah_1 = [
             semantic_intuition_jonah_1_para1,
             semantic_intuition_jonah_1_para2,
             semantic_intuition_jonah_1_para3,
             semantic_intuition_jonah_1_all
-        ]
+        ]   // packaged jonah 1 story and question
         
 
         
         
-        
-       var semantic_intuition_jonah_2_para1 = {
+        // Jonah 2
+        var semantic_intuition_jonah_2_para1 = {
             type: 'html-keyboard-response',
             stimulus: 'Please read carefully:',
             choices: jsPsych.ALL_KEYS,
             prompt: jonah_2_story_para1,
         }
-        
         var semantic_intuition_jonah_2_para2 = {
             type: 'html-keyboard-response',
             stimulus: 'Please read carefully:',
             choices: jsPsych.ALL_KEYS,
             prompt: jonah_2_story_para2,
         }
-        
         var semantic_intuition_jonah_2_para3 = {
             type: 'html-keyboard-response',
             stimulus: 'Please read carefully:',
             choices: jsPsych.ALL_KEYS,
             prompt: jonah_2_story_para3,
-        }
-             
+        }   
         var semantic_intuition_jonah_2_all = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
@@ -202,31 +201,84 @@
                 }
             ]
         }
-        
+        // Jonah 2 packaged
         var semantic_intuition_jonah_2 = [
             semantic_intuition_jonah_2_para1,
             semantic_intuition_jonah_2_para2,
             semantic_intuition_jonah_2_para3,
             semantic_intuition_jonah_2_all
-        ]
+        ] // packaged jonah 2 story and question
 
 
         
-        //////// PACKAGING
-
-        var all_semantic_intuition_subtasks = [
+        
+        // all 4 subtasks shuffled and packaged
+        var all_semantic_intuition_subtasks = 
+            shuffle([
             semantic_intuition_godel_1,
             semantic_intuition_godel_2,
             semantic_intuition_jonah_1,
             semantic_intuition_jonah_2
-        ]
-
-
-        var semantic_intuition_task =       [en_reading_check].concat(
-            semantic_intuition_instr_page,
-            shuffle(all_semantic_intuition_subtasks) // randomize
-        )   
+        ]) // randomized subtasks
         
+        
+        
+        
+        // conditional function for CN "ineligible" timeline
+        var if_node_ineligible = {
+            timeline: [en_reading_check_feedback_ineligible_page],
+            conditional_function: function(){
+                var en_reading_check_response = jsPsych.data.get().filter({trial_type: 'survey-multi-choice-en-reading-check'}).values()[0].responses;
+                console.log(en_reading_check_response);
+                if(en_reading_check_response.includes("不能")){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        
+        
+        // conditional function for CN "eligible" timeline
+        var if_node_eligible = {
+            timeline: [
+                en_reading_check_feedback_eligible_page, 
+                semantic_intuition_instr_page,
+                all_semantic_intuition_subtasks
+            ],
+            conditional_function: function(){
+                var en_reading_check_response = jsPsych.data.get().filter({trial_type: 'survey-multi-choice-en-reading-check'}).values()[0].responses;
+                console.log(en_reading_check_response);
+                if(en_reading_check_response.includes("能")){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        
+
+
+        
+//        timeline = timeline.concat([en_reading_check, if_node_ineligible, if_node_eligible])
+        
+        
+        var semantic_intuition_task =       [en_reading_check].concat(
+            if_node_ineligible,
+            if_node_eligible
+        )  
+ 
+        
+        //////// PACKAGING
+        
+//
+//        var semantic_intuition_task =       [en_reading_check].concat(
+//            semantic_intuition_instr_page,
+//            all_semantic_intuition_subtasks
+//        )   
+        
+//        console.log(semantic_intuition_task)
         
 
 //////////////////////////////////////////////////////
@@ -236,16 +288,15 @@
     for (var i = 0; i < semantic_intuition_task.length; i++) {
         var current_task = semantic_intuition_task[i]
         timeline = timeline.concat(current_task)  // timeline.push does not take arrays
-
     }
         
         
     jsPsych.init({
         timeline: timeline,
-        on_trial_finish: function(){
-        jsPsych.data.displayData();
-    }
-  })
+        on_trial_finish: function(){jsPsych.data.displayData();}
+    })
+        
+        
     
     
     </script>
