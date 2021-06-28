@@ -47,11 +47,13 @@
  
     ///////////////////////////////////////////////////////
         
+        
         // semantic intuition task from Machery paper
 
 
         //////// TASK VARIABLES
 
+        
         
         
         // EN reading check for CN participants
@@ -98,34 +100,84 @@
         
                
         // Godel 1
-        var semantic_intuition_godel_1 = {
+        var semantic_intuition_godel_1_para1 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: godel_1_story_part1,
+        } 
+        var semantic_intuition_godel_1_para2 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: godel_1_story_part2,
+        }
+        var semantic_intuition_godel_1_para3 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: godel_1_story_part3,
+        }     
+        var semantic_intuition_godel_1_all = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
             questions: [
                 {
-                    prompt: godel_1_story,
+                    prompt: godel_1_story_all,
                     name: "godel_1",
                     options: godel_1_opt,
                     required: true,
                 }
             ]
         }
+        // Godel 1 packaged       
+        var semantic_intuition_godel_1 = [
+            semantic_intuition_godel_1_para1,
+            semantic_intuition_godel_1_para2,
+            semantic_intuition_godel_1_para3,
+            semantic_intuition_godel_1_all
+        ]   // packaged godel 1 story and question
 
         
         
         // Godel 2
-        var semantic_intuition_godel_2 = {
+        var semantic_intuition_godel_2_para1 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: godel_2_story_part1,
+        } 
+        var semantic_intuition_godel_2_para2 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: godel_2_story_part2,
+        }
+        var semantic_intuition_godel_2_para3 = {
+            type: 'html-keyboard-response',
+            stimulus: 'Please read carefully:',
+            choices: jsPsych.ALL_KEYS,
+            prompt: godel_2_story_part3,
+        }
+        var semantic_intuition_godel_2_all = {
             type: 'survey-multi-choiceOLD',
             button_label: question_button,
             questions: [
                 {
-                    prompt: godel_2_story,
+                    prompt: godel_2_story_all,
                     name: "godel_2",
                     options: godel_2_opt,
                     required: true,
                 }
             ]
         }
+        // Godel 2 packaged       
+        var semantic_intuition_godel_2 = [
+            semantic_intuition_godel_2_para1,
+            semantic_intuition_godel_2_para2,
+            semantic_intuition_godel_2_para3,
+            semantic_intuition_godel_2_all
+        ]   // packaged godel 2 story and question
 
         
         
@@ -308,7 +360,8 @@
 //////////////////////////////////////////////////////
     
                 
-        
+    
+    // flatten array
     for (var i = 0; i < semantic_intuition_task.length; i++) {
         var current_task = semantic_intuition_task[i],
         timeline = timeline.concat(current_task)  // timeline.push does not take arrays
