@@ -220,8 +220,13 @@
             semantic_intuition_godel_2,
             semantic_intuition_jonah_1,
             semantic_intuition_jonah_2
-        ]) // randomized subtasks
-        
+        ])
+        // flatten all_semantic_intuition_subtasks array
+        var all_semantic_intuition_subtasks_flattened = []
+        for (var i = 0; i < all_semantic_intuition_subtasks.length; i++) {
+            var current_task = all_semantic_intuition_subtasks[i],
+            all_semantic_intuition_subtasks_flattened = all_semantic_intuition_subtasks_flattened.concat(current_task)
+        }        
         
         
         
@@ -243,8 +248,11 @@
         
         // conditional function for CN "eligible" timeline
         var if_node_eligible = {
-            timeline: [en_reading_check_feedback_eligible_page].concat(semantic_intuition_instr_page,
-                all_semantic_intuition_subtasks),
+            timeline: [en_reading_check_feedback_eligible_page].concat(
+                semantic_intuition_instr_page,
+                all_semantic_intuition_subtasks_flattened
+//                all_semantic_intuition_subtasks
+            ),
 //            [
 //                en_reading_check_feedback_eligible_page, 
 //                semantic_intuition_instr_page,
@@ -260,11 +268,6 @@
                 }
             }
         }
-        
-
-
-        
-//        timeline = timeline.concat([en_reading_check, if_node_ineligible, if_node_eligible])
         
         
 
@@ -298,11 +301,6 @@
         
 
         
-//        var semantic_intuition_task =       [en_reading_check].concat(
-//            semantic_intuition_instr_page,
-//            all_semantic_intuition_subtasks
-//        )   
-        
 //        console.log(semantic_intuition_task)
         
 
@@ -312,7 +310,7 @@
                 
         
     for (var i = 0; i < semantic_intuition_task.length; i++) {
-        var current_task = semantic_intuition_task[i]
+        var current_task = semantic_intuition_task[i],
         timeline = timeline.concat(current_task)  // timeline.push does not take arrays
     }
         
