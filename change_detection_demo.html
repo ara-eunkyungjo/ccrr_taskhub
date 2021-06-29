@@ -67,6 +67,8 @@
     var stimulus_interval_length = 80
     var resp_prompt = "Can you describe the differences you saw?"
     var manipulation_prompt =  "<p>What are the focal objects in the picture?</p>"
+    var max_time = 5 * 1000 
+    
     
         
     var stimulus_index = Array.from({ length: stimulus_pair }, (v, i) => i+1)
@@ -79,7 +81,7 @@
     
     for (i = 0; i < stimulus_pair; i++){
         
-     
+        
         // shuffle within pair 
         var stimuli = [task_stimulus_a[i], task_stimulus_b[i]]
         var stimuli = shuffle(stimuli)
@@ -132,8 +134,26 @@
         var trial_while_loop = {
         timeline: [interval, first_stimulus, second_stimulus_if_node],
         loop_function: function (data) {
-            console.log(data.values())
+           
+            var first_trial = jsPsych.data.get().filter({rt:null}).first().values()[0]
+            var last_survey = jsPsych.data.get().filter({trial_type:"survey-text"}).last().values()[0]
             
+            var end_time = jsPsych.data.get().last().values()[0].time_elapsed
+            
+            if(typeof last_survey === "undefined"){
+                // calculate time using the starting trial 
+                var start_time = first_trial.time_elapsed    
+                
+            }else{
+                // calculate time using the last survey trial 
+                var start_time = last_survey.time_elapsed    
+               
+            }
+            
+            if(end_time - start_time > max_time){
+
+                return false
+            }    
             
             if (data.values().length == 4){
                 if(data.values()[1].response == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Space') | 
