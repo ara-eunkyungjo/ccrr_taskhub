@@ -273,12 +273,12 @@
             semantic_intuition_jonah_1,
             semantic_intuition_jonah_2
         ])
-        // flatten all_semantic_intuition_subtasks array
-        var all_semantic_intuition_subtasks_flattened = []
-        for (var i = 0; i < all_semantic_intuition_subtasks.length; i++) {
-            var current_task = all_semantic_intuition_subtasks[i],
-            all_semantic_intuition_subtasks_flattened = all_semantic_intuition_subtasks_flattened.concat(current_task)
-        }        
+//        // flatten all_semantic_intuition_subtasks array
+//        var all_semantic_intuition_subtasks_flattened = []
+//        for (var i = 0; i < all_semantic_intuition_subtasks.length; i++) {
+//            var current_task = all_semantic_intuition_subtasks[i],
+//            all_semantic_intuition_subtasks_flattened = all_semantic_intuition_subtasks_flattened.concat(current_task)
+//        }        
         
         
         
@@ -300,16 +300,11 @@
         
         // conditional function for CN "eligible" timeline
         var if_node_eligible = {
-            timeline: [en_reading_check_feedback_eligible_page].concat(
+            timeline:[en_reading_check_feedback_eligible_page].concat(
                 semantic_intuition_instr_page,
-                all_semantic_intuition_subtasks_flattened
-//                all_semantic_intuition_subtasks
+//                all_semantic_intuition_subtasks_flattened
+                ...all_semantic_intuition_subtasks  // ... for flattening the array
             ),
-//            [
-//                en_reading_check_feedback_eligible_page, 
-//                semantic_intuition_instr_page,
-//                all_semantic_intuition_subtasks
-//            ],
             conditional_function: function(){
                 var en_reading_check_response = jsPsych.data.get().filter({trial_type: 'survey-multi-choice-en-reading-check'}).values()[0].responses;
                 console.log(en_reading_check_response);
