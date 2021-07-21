@@ -1,0 +1,266 @@
+
+body {
+        margin: 0;
+        padding: 50;
+        overflow: hidden;
+        background-color: white;
+      }
+        
+      #menu {
+        display: none;
+        position: absolute;
+        width: 60px;
+        background-color: white;
+        box-shadow: 0 0 5px grey;
+        border-radius: 3px;
+      }
+
+      #menu button {
+        width: 150%;
+        background-color: white;
+        border: none;
+        margin: 0;
+        padding: 5px;
+      }
+
+      #menu button:hover {
+        background-color: lightgray;
+      }
+
+      #stage-parent {
+        width: 100%;
+      }
+
+#canvas {
+  border:1px solid;
+}
+
+
+  #leftTestButton {
+    position: fixed;
+    left: 40px;
+    bottom: 410px;
+    width: 300px;
+    height: 200px;
+    background: transparent;
+    border: none !important;
+    font-size:0;
+    z-index: 5;
+  }
+
+  #nextButton {
+    position: fixed;
+    left: 462px;
+    bottom: 10px;
+    width: 100px;
+    height: 40px;
+    background-color: green;
+    border: 2px solid #000000;
+    font-size: 50px;
+    z-index: 5;
+  }
+
+ #rightTestButton {
+    position: fixed;
+    left: 730px;
+    bottom: 410px;
+    width: 300px;
+    height: 200px;
+    background: transparent;
+    border: none !important;
+    font-size:0;
+    z-index: 5;
+  }
+
+  #leftPair1 {
+    position: fixed;
+    bottom: 460px;
+    left: 90px;
+    width: 100px;
+    z-index: 2;
+  }
+
+  #leftPair2 {
+    position: fixed;
+    bottom: 460px;
+    left: 200px;
+    width: 100px;
+    z-index: 2;
+  }
+
+  #rightPair1 {
+    position: fixed;
+    bottom: 460px;
+    left: 765px;
+    width: 100px;
+    z-index: 2;
+  }
+
+  #rightPair2 {
+    position: fixed;
+    bottom: 460px;
+    left: 875px;
+    width: 100px;
+    z-index: 2;
+  }
+
+  #leftTray {
+    position: fixed;
+    bottom: 450px;
+    left: 75px;
+    width: 240px;
+    z-index: 2;
+  }
+
+  #rightTray {
+    position: fixed;
+    bottom: 450px;
+    left: 750px;
+    width: 240px;
+    z-index: 2;
+  }
+
+  #table {
+    position: fixed;
+    bottom: 60px;
+    left: 137px;
+    width: 750px;
+    z-index: 0;
+  }
+
+  #friend {
+    position: fixed;
+    bottom: 400px;
+    left: 437px;
+    width: 150px;
+    z-index: 0;
+  }
+
+  #scene {
+    height: 600px;
+    width: 800px;
+    z-index: -2;
+  }
+
+  #leftObj {
+    position: fixed;
+    bottom: 450px;
+    left: 387px;
+    width: 100px;
+    z-index: 2;
+  }
+
+  #rightObj {
+    position: fixed;
+    bottom: 450px;
+    left: 537px;
+    width: 100px;
+    z-index: 2;
+  }
+
+  .box {
+    position: fixed;
+    bottom: 140px;
+    left: 287px;
+    width: 450px;
+    z-index: 0;
+  }
+
+  #background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 1200px;
+    height: 705px;
+    z-index: -1;
+  }
+
+.block-text {
+  width: 500px;
+  text-align: justify;
+  margin: 0 auto;
+  margin-bottom: 1em;
+}
+
+
+#legal {
+  margin: 0 auto;
+  margin-top: 1.5em;
+  font-size: 0.8em;
+  line-height: normal;
+}
+
+
+#stage {
+  width: 900px;
+  height: 440px;
+  padding-bottom: 20px;
+}
+
+.point_agent_r {
+    position: absolute;
+    bottom: 255px;
+    left: 368px;
+    width: 280px;
+}
+
+.point_agent_l {
+    position: absolute;
+    bottom: 255px;
+    left: 392px;
+    width: 280px;
+}
+
+.agent_eat {
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+}
+
+#logo-text {
+  font-weight: bold;
+}
+
+
+.block-text {
+  width: 500px;
+  text-align: justify;
+  margin: 0 auto;
+  margin-bottom: 1em;
+}
+
+
+#legal {
+  margin: 0 auto;
+  margin-top: 1.5em;
+  font-size: 0.8em;
+  line-height: normal;
+}
+
+#number {
+  font-size: 42px;
+  font-family: Arial, sans-serif;
+  margin: 0 auto;
+  text-align: center;
+  width: 100px;
+  margin-top: 100px;
+}
+
+.column {
+  float: right;
+  display: block;
+  padding: 15px;
+ margin-right: 185px
+}
+
+/* Clear floats after image containers */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.game{
+	margin: 0 auto;
+	border: 10px outset #ddd;
+}

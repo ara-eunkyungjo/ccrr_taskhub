@@ -1,0 +1,258 @@
+<html>
+      
+    <head>
+        <script src= "js/jspsych.js"></script>
+        <script src="js/English-demog.js"></script>
+<!--        <script src="js/Mandarin-demog.js"></script>-->
+        
+<!--        to display Chinese characters:-->
+        <meta charset="utf-8"> 
+        
+<!-- Or versioned -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css"
+/>
+
+<!-- Include Choices JavaScript (latest) -->
+
+<!-- Or versioned -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+
+        <script src="js/jspsych-survey-multi-choice.js"></script>
+        <script src="js/jspsych-demo-subses.js"></script>
+        <script src="js/jspsych-demo-objses.js"></script>
+        <script src="js/jspsych-demo-overseas.js"></script>
+        
+        <script src="js/jspsych-survey-text.js"></script>
+        <script src="js/jspsych-demo-residentialmobi.js"></script>
+        <script src="js/jspsych-demo-uszipcode.js"></script>
+        <script src="js/jspsych-feedback.js"></script>
+        
+        <script src="js/jspsych-dropdown.js"></script>
+        <script src="js/jspsych-demo-langfluency.js"></script>
+        <script src="js/jspsych-demo-langfluency-CN.js"></script>
+
+        
+        <link rel="stylesheet" href="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <!-- RMTS Version: <script src="https://code.jquery.com/jquery-1.10.2.js"></script> -->
+        <link href="css/jspsych.css" rel="stylesheet" type="text/css"></link>
+        <link href="css/style.css" rel="stylesheet" type="text/css"></link>
+        <link rel="stylesheet" href="css/w3.css">
+
+    
+<!--centering question displays-->
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        html {
+            display: table;
+            margin: auto;
+        }
+
+        body {
+            display: table-cell;
+            vertical-align: middle;
+        }  
+    </style>
+        
+    </head>
+
+
+
+    <body></body>
+
+
+
+    <script>
+    
+    var CN = false;
+    var userLang = navigator.language || navigator.userLanguage; 
+    var timenum = Date.now();
+    var subject_id = 'SS' + timenum;
+    jsPsych.data.addProperties({ subject: subject_id });
+    jsPsych.data.addProperties({ broswerLang: userLang });
+
+    var timeline = [];
+ 
+        
+        
+        ////////////////////// Demog Qs start from here ////////////////////////        
+
+
+
+
+        
+        
+        
+        
+    var subjectitve_ses = {
+        type: "demo-subses",
+        questions: [
+            {prompt: '<img src="ladder.png"></img>', name: 'subjectiveses', 
+             options: sub_ses_options, 
+             required:true} 
+        ],
+        preamble: sub_ses,
+        button_label: label_done
+    }
+     
+    timeline.push(subjectitve_ses) 
+  
+        
+
+
+    var objective_ses = {
+        type: "demo-objses",
+        questions: [
+            {prompt: obj_ses, name: 'objectiveses', options: obj_ses_options, required:true}
+        ],
+        button_label: label_done
+    }
+    
+    timeline.push(objective_ses) 
+        
+        
+      
+        
+    var overseas_exp = {
+        type: "demo-overseas",
+        questions: [
+            {prompt: ovs_exp, name: 'overseaexp', options: ovs_exp_options, required:true}
+        ], 
+        button_label: label_done
+    }
+    
+    timeline.push(overseas_exp) 
+        
+
+
+        
+    var res_mobi = {
+        type: "demo-residentialmobi",
+        questions: [
+                {prompt: resmobi_names, name: 'resimobinames', rows: 5, columns: 40, required:true},
+                {prompt: resmobi_num, name: 'resimobinum', required:true}
+        ],
+        button_label: label_done
+    }
+    
+    timeline.push(res_mobi) 
+
+
+
+
+    if (!(CN)){        
+        var lang_fluency_US = {
+            type: "demo-langfluency",
+            preamble: lgfluency_preamble, 
+            superq: lgfleuncy_superq,
+            questions:[
+                {text: sp, 
+                 options: opts,
+                 placeholder: sp_placeholder, 
+                 required:true}, 
+                {text: ud, 
+                 options: opts,
+                 placeholder: ud_placeholder,
+                 required:true}, 
+                {text: rd, 
+                 options: opts,
+                 placeholder: rd_placeholder,
+                 required:true}
+            ]
+        }
+
+        timeline.push(lang_fluency_US)
+    
+    }else{
+        var lang_fluency_CN = {
+            type: "demo-langfluency-CN",
+            preamble: lgfluency_preamble, 
+            superq: lgfleuncy_superq,
+            questions:[
+                {text: sp, 
+                 options: opts,
+                 placeholder: sp_placeholder, 
+                 required:true}, 
+                {text: ud, 
+                 options: opts,
+                 placeholder: ud_placeholder,
+                 required:true}, 
+                {text: rd, 
+                 options: opts,
+                 placeholder: rd_placeholder,
+                 required:true}
+            ]
+        }
+        
+        timeline.push(lang_fluency_CN)
+        
+    }
+        
+
+
+      
+ 
+    if (!(CN)){
+        var zipcode_us = {
+            type: "demo-uszipcode",
+            questions: [
+                {prompt: uszipcode, required:true}
+            ],
+            button_label: label_done
+        }
+
+        timeline.push(zipcode_us) 
+    }
+        
+    
+    
+
+    var final_feedback = {
+        type: "feedback",
+        questions: [
+            {prompt: ask_feedback, rows: 5, columns: 40}
+        ],
+        button_label: label_done
+    }
+ 
+     timeline.push(final_feedback)   
+     
+     
+        
+       
+        ////////////////////////// Demog Qs end here /////////////////////////////
+        
+        
+    function saveData(name, data){
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '../../../cgi-bin/daffner2000/write_data.php'); // langcog server path
+        //xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({filename: name, filedata: data}));
+    }
+        
+        
+    jsPsych.init({
+        timeline: timeline,
+        //show_progress_bar: !kid,
+        //use_webaudio: true, // this won't work for local testing (CORS), but maybe on server
+        //preload_audio: audio,
+        //preload_images: images,
+        //preload_video: video,
+//        on_trial_finish: function(){
+        on_finish: function(){
+            saveData("cultureRR1-" + subject_id, jsPsych.data.get().csv());
+            jsPsych.data.displayData();
+            //setTimeout(function() { turk.submit(jsPsych.data.get().ignore('external-html').json()); }, 5000);
+      }
+    })
+        
+        
+    </script>
+</html>

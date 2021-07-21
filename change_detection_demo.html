@@ -88,6 +88,9 @@
         
         var first_stimulus = {
         type: "html-keyboard-response", 
+        data:{
+            variable_type:"lol"
+        },
         stimulus: stimuli[0],
         choices:["Space"], 
         //stimulus_duration: 1000, 
@@ -154,6 +157,10 @@
 
                 return false
             }    
+            
+            var cool_trials = 
+            
+             console.log(cool_trials)
             
             if (data.values().length == 4){
                 if(data.values()[1].response == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('Space') | 

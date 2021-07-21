@@ -1,0 +1,836 @@
+ <!DOCTYPE html>
+<html>
+    <title>Study</title> 
+    <head>
+        <meta charset="utf-8">
+        <script>     
+        var studySize = 199;      //this is the number of .csv data files to save before pausing the study
+        var lang = "CN";           //EN, VN, CN language & test country variables
+
+        var prolific = false; // CHANGE: prolific or not
+        var collect_data = true; // CHANGE: actually logging important data or not. this turns on the check for number of responses collected.
+            
+        var userLang = navigator.language || navigator.userLanguage; 
+        var timenum = Date.now();
+
+        </script>
+        <script id="whichScript"></script>
+        
+        <!-- set language based on lang var above -->
+        <script type="text/javascript">
+        var parent = document.getElementById("whichScript")
+        var studyLang = document.createElement("script")
+
+        if (lang == "CN") {
+            studyLang.setAttribute("src","js/Mandarin.js")
+            studyLang.setAttribute("charset","utf-8")
+          } else if (lang == "VN") {
+              studyLang.setAttribute("src", "js/Vietnamese.js"); //change this
+              studyLang.setAttribute("charset","utf-8")     
+          } else{
+            studyLang.setAttribute("src","js/English.js")
+          }
+        whichScript.appendChild(studyLang)
+
+        </script>
+        
+        <script id="whichStim"></script>
+        <!-- set stim based on lang var above -->
+        <script type="text/javascript">
+        var parent = document.getElementById("whichStim")
+        var stimLang = document.createElement("script")
+
+        if (lang == "CN") {
+            stimLang.setAttribute("src","js/stim_M.js")
+            stimLang.setAttribute("charset","utf-8")
+          } else if (lang == "VN") {
+              stimLang.setAttribute("src", "js/stim_V.js"); //change this
+              stimLang.setAttribute("charset","utf-8")     
+          } else{
+            stimLang.setAttribute("src","js/stim_E.js")
+          }
+        whichStim.appendChild(stimLang);
+
+        </script>
+        
+        
+        <title> __ </title>
+        <script src="js/jspsych.js"></script>
+        <script src = "js/konva.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+    
+        
+        
+        <script src="js/jspsych-survey-multi-choice-C.js"></script> <!-- changed for CN -->
+        <script src="js/jspsych-html-button-response.js"></script>
+        
+        <script src="js/jspsych-attribution-Q1.js"></script>
+        <script src="js/jspsych-attribution-Q2.js"></script>
+        <script src="js/jspsych-prolific-ID.js"></script>
+        <script src="js/jspsych-instructions.js"></script>
+       
+        <script src="js/jspsych-demog-dropdown.js"></script>
+        <script src="js/jspsych-demog-free-response.js"></script>
+        <script src="js/jspsych-demog-multi-choice.js"></script>
+        <script src="js/jspsych-demog-multi-select.js"></script>
+        
+        <script src="js/jspsych-funnel-debriefing-specific.js"></script>
+        <script src="js/jspsych-funnel-debriefing-general.js">
+        </script>
+        <!-- complex-animation embeds an animated sequence of images in a scene and plays audio -->
+        <link rel="stylesheet" href="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <!-- RMTS Version: <script src="https://code.jquery.com/jquery-1.10.2.js"></script> -->
+        <link href="css/jspsych.css" rel="stylesheet" type="text/css"></link>
+        <link href="css/style.css" rel="stylesheet" type="text/css"></link>
+        <link rel="stylesheet" href="css/w3.css">
+        <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css"
+/>
+
+
+
+
+        
+    </head>
+    <body></body>
+    <script>
+        
+    var userLang = navigator.language || navigator.userLanguage; 
+    var timenum = Date.now();
+    var turkInfo = jsPsych.turk.turkInfo();
+    //$.getJSON('https://json.geoiplookup.io/api?callback=?', function(data) {
+      //console.log(JSON.stringify(data, null, 2));
+     // jsPsych.data.addProperties({ IP: data.ip, country_code: data.country_code });
+    //});
+
+    // if we're not on MTurk, create a timestamp-based subject number; otherwise use turker ID
+    var subject_id = 'CL' + timenum;
+
+    // store subject in data on every trial
+    jsPsych.data.addProperties({ subject: subject_id });
+    jsPsych.data.addProperties({ browserLang: userLang });
+    jsPsych.data.addProperties({ condition: ""}); // CHANGE: condition
+
+    var timeline = [];
+        
+        
+    var all_dup_triads = shuffle([
+        dup_triads_1,
+        dup_triads_2,
+        dup_triads_3,
+        dup_triads_4,
+        dup_triads_5,
+        dup_triads_6,
+        dup_triads_7,
+        dup_triads_8,
+        dup_triads_9,
+        dup_triads_10,
+        dup_triads_11,
+        dup_triads_12,
+        dup_triads_13,
+        dup_triads_14,
+        dup_triads_15,
+        dup_triads_16,
+        dup_triads_17,
+        dup_triads_18,
+        dup_triads_19
+        //dup_triads_20
+    ]);
+    
+        /*
+    // fillers a have preference over b. 
+    var all_fillers = [
+        fillers_a, 
+        fillers_b
+    ]
+*/ 
+    function chunk(array, size) {
+        const chunked_arr = [];
+        let index = 0;
+        while (index < array.length) {
+            chunked_arr.push(array.slice(index, size + index));
+            index += size;
+        }
+        return chunked_arr;
+    }
+    
+    function saveData(name, data){
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', saveScript); // langcog server path
+        //xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({filename: name, filedata: data}));
+    }
+    ////////////////////////////////////////////////////////////////////////
+   ///////////////////// create 1st half of Qs ////////////////////////////
+   ////////////////////////////////////////////////////////////////////////
+        
+    questions1stHalf = [];
+        
+    // CHANGE: divide single triads in 2
+    //for (var i = 0; i < all_triads.length; i++) {
+    var next_single_triad = 0; 
+    for (var i = 0; i < single_triads.length / 2; i++) {
+        questions1stHalf.push({prompt: single_triads[i][0], name: single_triads[i][0] + "_triad" + i, options: shuffle(single_triads[i][1]), required: true, horizontal: false, stimulus_type: "triad"});
+        next_single_triad++; 
+    }
+    //console.log("without fillers 1st half single triad: " + questions1stHalf.length);
+    
+    // CHANGE: add dup fillers. choose one from each array
+    for (var i = 0; i < all_dup_triads.length; i++)  { // iterate through all groups
+        //just take the first group because it's already shuffled
+        curr_triads = all_dup_triads[i][0];
+        //console.log(curr_triads);
+        for (var j = 0; j < curr_triads.length; j++) {
+            var curr_options = shuffle(curr_triads[j][1]); // shuffle the options
+            var item = {
+                prompt: curr_triads[j][0], 
+                name: curr_triads[j][0] + "_triadA" + j, 
+                options: curr_options, 
+                required: true, 
+                horizontal: false,
+                stimulus_type: "triad"
+                
+            }
+            questions1stHalf.push(item);
+        }
+    }
+    
+    //console.log("without fillers 1st half: " + questions1stHalf.length);
+    
+    //CHANGE: triad / filler ratio (=2)
+    var n_fillers = questions1stHalf.length; 
+    //console.log(n_fillers);
+    
+        /*
+    function add_filler_group(i) {
+        curr_fillers = all_fillers[i];
+        for (var j = 0; j < curr_fillers.length; j++) {
+            questions1stHalf.push({prompt: curr_fillers[j][0], name: curr_fillers[j][0] + "_filler", options: shuffle(curr_fillers[j][1]), required: true, horizontal: false});
+            curr_n_fillers++; 
+            if (curr_n_fillers >= n_fillers) {
+                console.log("done with inner loop")
+                return;
+            }
+        } 
+    }
+    */
+    
+    var next_filler = 0;
+        
+
+    //add all fillers until n_fillers
+    for (var i = 0; i < n_fillers; i++) {
+        var curr_options = shuffle(all_fillers[i][1]); // shuffle the options
+            var item =  {
+                 prompt: all_fillers[i][0],
+                 name: all_fillers[i][0] + "_filler",
+                 options: curr_options, 
+                 required: true, 
+                 horizontal: false,
+                 stimulus_type: "filler"
+            }
+            questions1stHalf.push(item);
+            next_filler++; 
+    }
+        //console.log("next filler");
+        //console.log(next_filler);
+    
+    ////////////////////////////////////////////////////////////////////////
+   ///////////////////// create 2nd half of Qs ////////////////////////////
+   ////////////////////////////////////////////////////////////////////////
+    
+    questions2ndHalf = [];
+        
+    // CHANGE: divide single triads in 2
+    //for (var i = 0; i < all_triads.length; i++) {
+    for (var i = next_single_triad; i < single_triads.length; i++) {
+        questions2ndHalf.push({prompt: single_triads[i][0], name: single_triads[i][0] + "_triad" + i, options: shuffle(single_triads[i][1]), required: true, horizontal: false, stimulus_type: "triad"});
+    }
+        //console.log("without fillers 2nd half single triad: " + questions2ndHalf.length);
+    
+    // CHANGE: add dup triads. choose one from each array
+    for (var i = 0; i < all_dup_triads.length; i++)  { // iterate through all groups
+        //just take the second group because it's already shuffled
+        curr_triads = all_dup_triads[i][1];
+        //console.log(curr_triads);
+        for (var j = 0; j < curr_triads.length; j++) {
+            var curr_options = shuffle(curr_triads[j][1]); // shuffle the options
+            var item = {
+                prompt: curr_triads[j][0], 
+                name: curr_triads[j][0] + "_triadB" + j, 
+                options: curr_options, 
+                required: true, 
+                horizontal: false, 
+                stimulus_type: "triad"
+            }
+            questions2ndHalf.push(item);
+        }
+    }
+    
+        //console.log("without fillers 2nd half: " + questions2ndHalf.length);
+    
+        /*
+    function add_filler_group(i) {
+        curr_fillers = all_fillers[i];
+        for (var j = 0; j < curr_fillers.length; j++) {
+            questions1stHalf.push({prompt: curr_fillers[j][0], name: curr_fillers[j][0] + "_filler", options: shuffle(curr_fillers[j][1]), required: true, horizontal: false});
+            curr_n_fillers++; 
+            if (curr_n_fillers >= n_fillers) {
+                console.log("done with inner loop")
+                return;
+            }
+        } 
+    }
+    */
+    var n_fillers = next_filler + questions2ndHalf.length; 
+    //console.log(n_fillers);
+        
+    //add all fillers until n_fillers
+    for (var i = next_filler; i < n_fillers; i++) {
+        var curr_options = shuffle(all_fillers[i][1]); // shuffle the options
+            var item =  {
+                 prompt: all_fillers[i][0],
+                 name: all_fillers[i][0] + "_filler",
+                 options: curr_options, 
+                 required: true, 
+                 horizontal: false,  
+                 stimulus_type: "filler"
+            }
+            questions2ndHalf.push(item);
+    }
+    
+   ////////////////////////////////////////////////////////////////////////
+   ///////////////////// combine 2 halfs of Qs ////////////////////////////
+   ////////////////////////////////////////////////////////////////////////
+    
+        /*
+    console.log("1st half")  
+    console.log(questions1stHalf)
+    console.log("2nd half")
+    console.log(questions2ndHalf)
+    */
+        
+    var all_questions = []
+    questions1stHalf = shuffle(questions1stHalf);
+    for (var i = 0; i < questions1stHalf.length; i++) {
+        all_questions.push(questions1stHalf[i]);
+    }
+    questions2ndHalf = shuffle(questions2ndHalf);
+    for (var i = 0; i < questions2ndHalf.length; i++) {
+        all_questions.push(questions2ndHalf[i]);
+    }
+    
+    //console.log("all")
+    //console.log(all_questions)
+
+    
+    const N_TRIAL = 20; // number of items displayed on 1 page
+    triads_pages = [];
+        
+    var pages = chunk(all_questions, N_TRIAL); 
+    
+    function randomIntFromInterval(min, max) { // min and max included 
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+     
+    var n_trials = pages.length;
+    for (var i = 0; i < pages.length; i++) {
+        curr_questions = shuffle(pages[i]);
+        if (curr_questions.length >= N_TRIAL) {
+            if (attention_checks.length > 0) {
+                curr_att_check = attention_checks.shift();
+                var index = randomIntFromInterval(Math.ceil(N_TRIAL / 2), N_TRIAL - 1);
+                curr_questions.splice(index, 0, {
+                    prompt: curr_att_check[0], 
+                    name: curr_att_check[0] + "_attention check", 
+                    options: shuffle(curr_att_check[1]), 
+                    required: true,
+                    horizontal: false,
+                    stimulus_type: "attention check"     
+                });
+            }
+        }
+        //console.log(curr_questions.map(({stimulus_type})=>stimulus_type)); 
+        curr_triad_page = 
+        {
+            type: 'survey-multi-choice',
+            questions: curr_questions,
+            preamble: question_preamble, 
+            randomize_question_order: false,
+            button_label: '继续',
+            timeout: null,
+            post_trial_gap: 10,
+            data: {
+                stimulus_type: curr_questions.map(({stimulus_type})=>stimulus_type),
+                prompt: curr_questions.map(({prompt})=>prompt),
+                options: curr_questions.map(({options})=>options)
+            },
+            on_finish: function() {
+                // at the end of each trial, update the progress bar
+                // based on the current value and the proportion to update for each trial
+                var curr_progress_bar_value = jsPsych.getProgressBarCompleted();
+                jsPsych.setProgressBar(curr_progress_bar_value + (1/n_trials));
+            }
+        };
+        triads_pages.push(curr_triad_page);
+    }
+        
+            
+    ////////////////////////////////////////////////////////////////////////
+   ///////////////////// demog Qs start from here /////////////////////////
+   ////////////////////////////////////////////////////////////////////////
+    
+    // intro page
+    var demog_p0 = {
+        type: "instructions", 
+        pages: demog_p0_instr,
+        show_clickable_nav: true, 
+    }
+            
+    // drop down
+    // born country, current residences, grew up states     
+       
+    var demog_country_born_current_grew_up = {
+        type: "demog-dropdown",
+        superq:demog_require_answer,
+        button_label:question_button,
+        data: {
+            variable_type: "demog_country_born_current_grew_up"
+        },
+        questions:[
+         {text: demog_born_instr, name: "born_country", options: demog_born_opts,
+          placeholder: demog_dropdown_placeholder, required:true}, 
+         {text: demog_living_instr, name: "living_country", options: demog_living_opts,
+          placeholder: demog_dropdown_placeholder, required:true}, 
+         {text: demog_location_state_instr,name: "state_grewup",
+         options: demog_location_state_opts,
+         placeholder: demog_dropdown_placeholder,
+        required: true}, 
+        ]
+    }    
+    
+    var demog_county_zip_places_lived = {
+        type: "demog-free-response" ,
+        button_label: question_button, 
+        data: {
+            variable_type: "demog_county_zip_places_lived"
+        },
+        preamble: demog_require_answer,
+        questions: [
+        {prompt: demog_us_zipcode_instr, name: "zipcode", required: false}, 
+        {prompt: demog_res_mobi_num, name: 'resimobinum', required:true}
+        ]
+    }  
+    
+    var demog_oversea_experience = {
+         type: 'demog-multi-choice',
+        button_label: question_button,
+        preamble:demog_require_answer,
+        data: {
+            variable_type: "demog_oversea_experience"
+        },
+        questions: [
+            
+            {prompt: demog_year_abroad_instr, name: 'abroadexp', options: demog_year_abroad_opts, required:true}, 
+            {prompt: demog_num_ovs_exp_instr, name: 'overseaexpnum', options: demog_num_ovs_exp_opts, required:true}
+            
+        ]
+        
+    }
+    
+    var demog_conditional_year_abroad_regions = {
+        type: 'demog-multi-select', 
+        button_label: question_button,
+        preamble:demog_require_answer,
+        data: {
+            variable_type: "demog_conditional_year_abroad_regions"
+        },
+        questions: [
+            {prompt: demog_conditional_year_abroad_regions_instr, name: "which_regions", options: demog_conditional_year_abroad_regions_opts, 
+            required: true}
+        ]
+    }
+        
+    var demog_conditional_year_abroad_node = {
+        timeline: [demog_conditional_year_abroad_regions],
+        conditional_function: function(){
+        var data = jsPsych.data.get().last(1).values()[0];
+        if (data.responses.includes(demog_conditional_year_abroad_question_node)){
+            return true;
+        }else{
+            return false 
+        }}}
+        
+    var demog_language = {
+        type: 'demog-multi-choice',
+        button_label: question_button,
+        preamble:demog_require_answer,
+        data: {
+            variable_type: "demog_language"
+        },
+        questions: [
+            {prompt: demog_language_first_instr, name: "firstlanguage", options: demog_language_first_opts, required:true},
+            {prompt: demog_language_mono_instr, name: "monolingual", options: demog_language_mono_options, required: true},
+        ]
+    }
+    
+    var demog_language_en = {
+        type: 'demog-multi-choice',
+        preamble:demog_require_answer,
+        button_label: question_button,
+        data: {
+            variable_type: "demog_language_en"
+        },
+        questions: [
+            {prompt: demog_language_en_instr, name: "englishlanguage", options: demog_language_en_options, required: true},
+        ]
+    }
+    
+    var demog_language_vi = {
+        type: 'demog-multi-choice',
+        preamble:demog_require_answer,
+        button_label: question_button,
+        data: {
+            variable_type: "demog_language_vi"
+        },
+        questions: [
+            {prompt: demog_language_vn_instr, name: "vietnameselanguage", options: demog_language_vn_options, required: true}
+        ]
+    }
+             
+    
+    //need to fix this plugin's name
+    var demog_conditional_language_en_fluency = {
+         type: "demog-dropdown",
+         data: {
+            variable_type: "demog_conditional_language_en_fluency"
+        },
+        button_label: question_button,
+        superq:demog_require_answer,
+            preamble: demog_conditional_language_en_fluency_preamble, 
+            superq: demog_conditional_language_en_fluency_superq,
+            questions:[
+                {text: demog_conditional_language_en_fluency_sp, 
+                 options: demog_conditional_language_en_fluency_opts,
+                 placeholder: demog_conditional_language_en_fluency_sp_placeholder, 
+                 required:true}, 
+                {text: demog_conditional_language_en_fluency_ud, 
+                 options: demog_conditional_language_en_fluency_opts,
+                 placeholder: demog_conditional_language_en_fluency_ud_placeholder,
+                 required:true}
+            ]
+        }
+    
+    var demog_conditional_language_en_node = {
+        timeline: [demog_conditional_language_en_fluency],
+        conditional_function: function(){
+        var data = jsPsych.data.get().last(1).values()[0];
+        if (data.responses.includes(demog_conditional_language_en_question_node)){
+            return true;
+        }else{
+            return false 
+        }}}  
+    
+    var demog_conditional_language_vn_fluency = {
+         type: "demog-dropdown",
+         data: {
+            variable_type: "demog_conditional_language_vn_fluency"
+        },
+        button_label: question_button,
+        superq:demog_require_answer,
+            preamble: demog_conditional_language_vn_fluency_preamble, 
+            superq: demog_conditional_language_vn_fluency_superq,
+            questions:[
+                {text: demog_conditional_language_vn_fluency_sp, 
+                 options: demog_conditional_language_vn_fluency_opts,
+                 placeholder: demog_conditional_language_vn_fluency_sp_placeholder, 
+                 required:true}, 
+                {text: demog_conditional_language_vn_fluency_ud, 
+                 options: demog_conditional_language_vn_fluency_opts,
+                 placeholder: demog_conditional_language_vn_fluency_ud_placeholder,
+                 required:true}
+            ]
+        }
+    
+     var demog_conditional_language_vn_node = {
+        timeline: [demog_conditional_language_vn_fluency],
+        conditional_function: function(){
+        var data = jsPsych.data.get().last(1).values()[0];
+        if (data.responses.includes(demog_conditional_language_vn_question_node)){
+            return true;
+        }else{
+            return false 
+        }}} 
+    
+ 
+        
+    //need to fix this plugin's name
+    var demog_age_gender_ethnic = {
+        type: "demog-dropdown",
+        data: {
+            variable_type: "demog_age_gender_ethnic"
+        },
+        button_label: question_button,
+            superq: demog_require_answer,
+            questions:[
+                {text: demog_agegender_age_instr, 
+                 options: demog_agegender_age_opts,
+                 placeholder: demog_dropdown_placeholder, 
+                 name: "age", 
+                 required:true}, 
+                {text: demog_agegender_gender_instr, 
+                 options: demog_agegender_gender_opts,
+                 placeholder: demog_dropdown_placeholder, 
+                 name: "gender",
+                 required:true},
+                {text: demog_ethnic_instr, 
+                 options: demog_ethnic_opts,
+                 placeholder: demog_dropdown_placeholder, 
+                 name: "ethnic", 
+                 allowMultipleSelections: true, 
+                 required:true},
+            ]
+        }
+    
+    var demog_ses = {
+        type: "demog-multi-choice",
+        data: {
+            variable_type: "demo-objses"
+        },
+        preamble:demog_require_answer,
+        questions: [
+            {prompt: demog_objective_ses_instr, name: 'objectiveses', options: demog_objective_ses_opts, required:true}, 
+            {prompt: demog_subjective_ses_instr, name: "subjectiveses", options: demog_subjective_ses_opts, required:true},
+        ],
+        button_label: question_button
+    }
+    
+    
+
+   
+    var meta_feedback = {
+        type: "demog-free-response",
+        data: {
+            variable_type: "demo-meta"
+        },
+        questions: [
+            {prompt: demog_meta_instr, name: "meta", rows: 5, columns: 40}
+        ],
+        button_label: label_done
+    }
+    
+    var final_feedback = {
+        type: "demog-free-response",
+        data: {
+            variable_type: "demo-final"
+        },
+        questions: [
+            {prompt: demog_p4_final_feedback_instr, name: "finalfeedback", rows: 5, columns: 40}
+        ],
+        button_label: label_done
+    }
+ 
+        
+        
+    var finish_slide = {
+       type: 'html-button-response',
+       stimulus: finish_instruction+subject_id,
+       choices : [finish_instruction_button]
+    }
+     
+
+     
+        
+        
+    ///////////////////////////////////////////////////////////////////////////
+    ////////////////////////// demog Qs end here //////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    
+    //Main task timeline!
+    
+  if (prolific == true){  
+
+        var prolific_ID = {
+            type: 'prolific-id',
+            questions: [
+                {prompt: prolific_ID_prompt, required:true}
+            ],
+            button_label: prolific_ID_button 
+        }
+        
+        var prolific_CompletionCode = {
+           type: 'html-button-response',
+           stimulus: prolific_completion_code,
+           choices : [finish_instruction_button]
+        }
+    } 
+    
+        //0. tell them their participant ID
+    var participantIDmsg = {
+        type: 'html-button-response',
+        stimulus: participantIDtext1+subject_id+participantIDtext2,
+        choices : [finish_instruction_button]
+    }
+    
+    if(prolific == true) {
+        timeline.push(prolific_ID);
+    } else {
+        timeline.push(participantIDmsg);
+    }
+        
+    
+    var instructions = {
+        type: 'instructions',
+        pages: first_page_instruction,
+        show_clickable_nav: true,
+        show_page_number: true,
+        post_trial_gap: 2000
+    }
+    
+    timeline.push(instructions)
+
+    for (var i = 0; i < triads_pages.length; i++){
+        var task = triads_pages[i]
+       timeline = timeline.concat(task)   
+        //console.log(task)
+    }
+    
+     // 8. Demographic questions: 
+        //package demog questions
+  var demog_questions = [
+                      demog_p0, 
+                      demog_country_born_current_grew_up, 
+                      //demog_county_zip_places_lived, 
+                      demog_oversea_experience, 
+                      demog_conditional_year_abroad_node, 
+                      demog_language, 
+                      demog_language_en,
+                      demog_conditional_language_en_node, 
+                      demog_language_vi,
+                      demog_conditional_language_vn_node,
+                      demog_age_gender_ethnic,
+                      demog_ses]
+
+  
+    timeline = timeline.concat(demog_questions)
+
+    timeline.push(meta_feedback);
+    timeline.push(final_feedback);
+
+    timeline.push(finish_slide);
+    if(prolific == true) {
+        timeline.push(prolific_CompletionCode);
+    } 
+
+if (collect_data == false) {
+    var saveScript = '../../../cgi-bin/coglink/write_data_test.php'
+} else if (lang == "CN") {
+        var saveScript = '../../../cgi-bin/coglink/write_data_M.php'
+    } else if (lang == "VN"){
+        var saveScript = '../../../cgi-bin/coglink/write_data_V.php'
+    } else {
+        var saveScript = '../../../cgi-bin/coglink/write_data_E.php'
+    }
+
+        
+if (collect_data == false) {
+    var countScript = '../../../cgi-bin/coglink/countFilesTest.php'
+} else if (lang == "CN") {
+        var countScript = '../../../cgi-bin/coglink/countFilesM.php'
+    } else if (lang == "VN"){
+        var countScript = '../../../cgi-bin/coglink/countFilesV.php'
+    } else {
+        var countScript = '../../../cgi-bin/coglink/countFilesE.php'
+    }
+
+if (collect_data == true) {
+    var exptDone = false;
+    //check the number of csv files in the data folder
+    $.when(
+      $.get(countScript, function(data) {  //langcog server path specified above
+        if(data > studySize) exptDone = true;
+      })
+    ).then(function() {
+    if (exptDone) {
+      var cancelMessage = {
+        type: 'html-button-response',
+        stimulus: studyPaused,
+        choices : [finish_instruction_button]
+      }
+
+      jsPsych.init({
+        timeline: [cancelMessage]
+      });
+    } else {
+        
+      jsPsych.init({
+          timeline: timeline,
+          show_progress_bar: true,
+          auto_update_progress_bar: false,
+          on_trial_finish: function(){
+              saveData("triad-" + subject_id, jsPsych.data.get().json());
+              //jsPsych.data.displayData();
+              //setTimeout(function() { turk.submit(jsPsych.data.get().ignore('external-html').json()); }, 5000);
+        }
+      })
+    } 
+
+    })
+
+} else {
+
+    // test for countFiles.php CHANGE
+        var exptDone = false;
+    //check the number of csv files in the data folder
+    $.when(
+      $.get(countScript, function(data) {  //langcog server path specified above
+        if(data > studySize) exptDone = true;
+      })
+    ).then(function() {
+    if (exptDone) {
+      var cancelMessage = {
+        type: 'html-button-response',
+        stimulus: studyPaused,
+        choices : [finish_instruction_button]
+      }
+
+      jsPsych.init({
+        timeline: [cancelMessage]
+      });
+    } else {
+      jsPsych.init({
+          timeline: timeline,
+          show_progress_bar: true,
+          auto_update_progress_bar: false,
+          on_trial_finish: function(){
+              saveData("triad-" + subject_id, jsPsych.data.get().json());
+              //jsPsych.data.displayData();
+              //setTimeout(function() { turk.submit(jsPsych.data.get().ignore('external-html').json()); }, 5000);
+        }
+      })
+    }
+})
+/*
+    jsPsych.init({
+          timeline: timeline,
+          show_progress_bar: true,
+          auto_update_progress_bar: false,
+          on_trial_finish: function(){
+              saveData("triad-" + subject_id, jsPsych.data.get().csv());
+              //jsPsych.data.displayData();
+              //setTimeout(function() { turk.submit(jsPsych.data.get().ignore('external-html').json()); }, 5000);
+          }
+    })
+    */
+}
+        
+    
+    
+    
+    </script>
+</html>

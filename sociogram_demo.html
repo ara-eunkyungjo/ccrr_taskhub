@@ -47,18 +47,7 @@
         
         
         
-        
-        
-    var dropdown_test = {
-        type: "dropdown" ,
-        preamble: "haha", 
-        superq:"lol",
-        questions:[
-            {text: "i'm text",
-            options: demog_locations,
-            placeholder:"select your country"}
-        ]   
-    }    
+    
         
     
     //timeline.push(dropdown_test)
@@ -74,22 +63,28 @@
     }
     */
     //timeline.push(geolocation)
-        
+     var trial = {
+    type: 'instructions',
+    pages: [
+        '<p>Welcome to the experiment. Click next to begin.</p><p>new paragraph</p>',
+        'This is the second page of instructions.',
+        'This is the final page.'
+    ],
+    show_clickable_nav: true
+}
+     console.log("bug")
+     console.log(trial)
+     timeline.push(trial)
         
     var instruction = {
     type: 'instructions',
     pages: [
-        circle_instruction_1,
-        circle_instruction_2,
-        circle_instruction_3,
-        circle_instruction_4,
-        circle_instruction_5,
-        circle_instruction_6,
-        circle_instruction_7,
-        circle_instruction_8
+        "hello i'm instruction", 
     ],
     show_clickable_nav: true
     }    
+    
+    timeline.push(instruction)
         
         
     var exp = {
